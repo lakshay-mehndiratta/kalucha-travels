@@ -1,0 +1,78 @@
+import Image from "next/image";
+import Container from "@/components/ui/Container";
+import Eyebrow from "@/components/ui/Eyebrow";
+import Button from "@/components/ui/Button";
+
+const destinations = [
+  {
+    name: "Dubai",
+    image:
+      "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&q=80&auto=format",
+  },
+  {
+    name: "Singapore",
+    image:
+      "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=80&auto=format",
+  },
+  {
+    name: "Canada",
+    image:
+      "https://images.unsplash.com/photo-1519832979-6fa011b87667?w=400&q=80&auto=format",
+  },
+  {
+    name: "United Kingdom",
+    image:
+      "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=80&auto=format",
+  },
+  {
+    name: "Thailand",
+    image:
+      "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=80&auto=format",
+  },
+  {
+    name: "Australia",
+    image:
+      "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&q=80&auto=format",
+  },
+];
+
+export default function Destinations() {
+  return (
+    <section id="destinations" className="bg-cream py-20">
+      <Container>
+        <div className="flex justify-between items-end gap-5 flex-wrap mb-10">
+          <div>
+            <Eyebrow>Top Destinations</Eyebrow>
+            <h2 className="text-[34px] leading-tight text-navy">
+              Explore the World With{" "}
+              <span className="text-orange">Kalucha</span>
+            </h2>
+          </div>
+          <Button href="#" variant="outline-dark">
+            View All Destinations →
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-6 gap-3.5">
+          {destinations.map((dest) => (
+            <div
+              key={dest.name}
+              className="group relative rounded-xl overflow-hidden aspect-3/4"
+            >
+              <Image
+                src={dest.image}
+                alt={dest.name}
+                fill
+                className="object-cover transition-transform duration-350 ease-out group-hover:scale-108"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.65),transparent_55%)]" />
+              <span className="absolute bottom-3 left-3 z-10 text-white font-bold text-sm">
+                    {dest.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
