@@ -45,12 +45,12 @@ export default function Testimonials() {
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="bg-white/5 border border-white/10 rounded-brand p-[26px]"
+              className="bg-white/5 border border-white/10 rounded-brand p-6.5"
             >
               <span className="block text-orange text-[28px] font-serif mb-2.5">
                 &quot;
               </span>
-              <p className="text-sm text-[#d7dee1] mb-[22px] min-h-[80px]">
+              <p className="text-sm text-[#d7dee1] mb-5.5 min-h-20">
                 {t.quote}
               </p>
               <div className="flex items-center gap-3">

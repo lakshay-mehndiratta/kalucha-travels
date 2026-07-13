@@ -13,9 +13,9 @@ const navLinks = [
 export default function Header() {
   return (
     <header className="relative z-10 pt-4 px-6">
-      <div className="max-w-[1152px] mx-auto bg-white/[0.97] rounded-2xl px-5 py-3 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
+      <div className="max-w-6xl mx-auto bg-white/97 rounded-2xl px-5 py-3 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
         <Link href="#home" className="flex items-center gap-2.5 text-navy">
-          <div className="w-[38px] h-[38px] rounded-[9px] bg-orange flex items-center justify-center text-white font-serif font-bold text-xl">
+          <div className="w-9.5 h-9.5 rounded-[9px] bg-orange flex items-center justify-center text-white font-serif font-bold text-xl">
             K
           </div>
           <div>
@@ -28,7 +28,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <nav className="hidden lg:flex gap-[30px] text-[14.5px] font-medium text-[#33424b]">
+        <nav className="hidden lg:flex gap-7.5 text-[14.5px] font-medium text-[#33424b]">
           {navLinks.map((link) => (
             <Link
               key={link.href}

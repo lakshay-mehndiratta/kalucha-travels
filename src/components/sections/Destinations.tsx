@@ -63,7 +63,8 @@ export default function Destinations() {
                 src={dest.image}
                 alt={dest.name}
                 fill
-                className="object-cover transition-transform duration-350 ease-out group-hover:scale-108"
+                sizes="(max-width: 1024px) 33vw, 180px"
+                className="object-cover transition-transform duration-350 ease-out group-hover:scale-[1.08]"
               />
               <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.65),transparent_55%)]" />
               <span className="absolute bottom-3 left-3 z-10 text-white font-bold text-sm">

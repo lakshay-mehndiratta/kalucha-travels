@@ -12,26 +12,27 @@ const avatarImages = [
 
 export default function Hero() {
   return (
-    <div className="relative min-h-[640px] text-white overflow-hidden">
+    <div className="relative min-h-160 text-white overflow-hidden">
       <Image
         src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1600&q=80&auto=format"
         alt="Traveler at an airport"
         fill
         priority
+        sizes="100vw"
         className="object-cover -z-20"
       />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(10,25,35,0.88)_8%,rgba(10,25,35,0.55)_45%,rgba(10,25,35,0.15)_75%)]" />
 
       <Header />
 
-      <Container className="relative z-[3] pt-[70px] pb-[60px]">
-        <div className="inline-flex items-center gap-2 text-[#ffb083] text-[13px] font-bold uppercase tracking-[0.12em] mb-3.5 before:content-[''] before:w-[22px] before:h-0.5 before:bg-orange before:inline-block">
+      <Container className="relative z-3 pt-17.5 pb-15">
+        <div className="inline-flex items-center gap-2 text-[#ffb083] text-[13px] font-bold uppercase tracking-[0.12em] mb-3.5 before:content-[''] before:w-5.5 before:h-0.5 before:bg-orange before:inline-block">
           Your Journey, Our Expertise
         </div>
-        <h1 className="text-[52px] leading-[1.08] max-w-[640px] mb-5">
+        <h1 className="text-[52px] leading-[1.08] max-w-160 mb-5">
           Your Journey Begins With <span className="text-orange">Trusted</span> Visa Experts
         </h1>
-        <p className="max-w-[480px] text-[#e7edf0] text-base mb-8">
+        <p className="max-w-120 text-[#e7edf0] text-base mb-8">
           Visa assistance, international tours, holiday packages, flight
           bookings, hotel reservations and more — all under one roof, from
           Phagwara to the world.
@@ -45,7 +46,7 @@ export default function Hero() {
           </Button>
         </div>
 
-        <div className="inline-flex items-center gap-3.5 bg-white/[0.08] border border-white/25 px-5 py-3 rounded-2xl backdrop-blur-sm">
+        <div className="inline-flex items-center gap-3.5 bg-white/8 border border-white/25 px-5 py-3 rounded-2xl backdrop-blur-sm">
           <div className="flex">
             {avatarImages.map((src, i) => (
               <Image

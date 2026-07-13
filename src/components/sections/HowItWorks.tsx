@@ -48,12 +48,12 @@ export default function HowItWorks() {
             return (
               <div
                 key={step.title}
-                className="relative bg-white border border-line rounded-brand px-5 py-[26px]"
+                className="relative bg-white border border-line rounded-brand px-5 py-6.5"
               >
-                <div className="w-[30px] h-[30px] rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold mb-9">
+                <div className="w-7.5 h-7.5 rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold mb-9">
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <div className="absolute top-[22px] right-5 w-10 h-10 rounded-[10px] bg-[#fdece2] text-orange flex items-center justify-center text-lg">
+                <div className="absolute top-5.5 right-5 w-10 h-10 rounded-[10px] bg-[#fdece2] text-orange flex items-center justify-center text-lg">
                   <Icon />
                 </div>
                 <h4 className="text-base text-navy mb-1.5">{step.title}</h4>

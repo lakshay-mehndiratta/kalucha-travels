@@ -35,24 +35,24 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer id="contact" className="bg-navy-deep text-[#c7d1d5] pt-[60px]">
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-[30px] pb-11 border-b border-white/10">
+    <footer id="contact" className="bg-navy-deep text-[#c7d1d5] pt-15">
+      <div className="max-w-page mx-auto px-6">
+        <div className="grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-7.5 pb-11 border-b border-white/10">
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="w-[38px] h-[38px] rounded-[9px] bg-orange flex items-center justify-center text-white font-serif font-bold text-xl">
-                K
-              </div>
-              <div>
-                <div className="font-serif font-bold text-lg leading-[1.05] text-white">
-                  Kalucha
+                <div className="w-9.5 h-9.5 rounded-[9px] bg-orange flex items-center justify-center text-white font-serif font-bold text-xl">
+                    K
                 </div>
-                <div className="text-[9px] tracking-[0.25em] text-muted">
-                  TRAVELS
+                <div>
+                    <div className="font-serif font-bold text-lg leading-[1.05] text-white">
+                    Kalucha
+                    </div>
+                    <div className="text-[9px] tracking-[0.25em] text-muted">
+                    TRAVELS
+                    </div>
                 </div>
-              </div>
-            </div>
-            <p className="text-[13.5px] max-w-[260px] mt-3.5 mb-5 text-[#a9b6bc]">
+                </div>
+            <p className="text-[13.5px] max-w-65 mt-3.5 mb-5 text-[#a9b6bc]">
               Your trusted travel partner for visas, holidays, flights and
               unforgettable journeys worldwide.
             </p>
@@ -63,7 +63,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={s.href}
-                    className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center text-[13px] hover:bg-white/[0.16] transition-colors"
+                    className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-[13px] hover:bg-white/16 transition-colors"
                   >
                     <Icon />
                   </Link>

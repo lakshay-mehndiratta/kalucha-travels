@@ -15,7 +15,7 @@ const stats = [
 export default function StatsBand() {
   return (
     <div className="bg-navy-deep text-white py-11">
-      <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-4 text-center">
+      <div className="max-w-page mx-auto px-6 grid grid-cols-4 text-center">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (

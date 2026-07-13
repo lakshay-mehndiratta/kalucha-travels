@@ -55,7 +55,7 @@ export default function FAQ() {
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full flex justify-between items-center gap-4 px-[22px] py-[18px] text-[15px] font-semibold text-navy cursor-pointer text-left"
+                  className="w-full flex justify-between items-center gap-4 px-5.5 py-4.5 text-[15px] font-semibold text-navy cursor-pointer text-left"
                 >
                   {faq.question}
                   <span className="text-orange text-xl font-normal shrink-0">
@@ -63,7 +63,7 @@ export default function FAQ() {
                   </span>
                 </button>
                 {isOpen && (
-                  <p className="px-[22px] pb-[18px] text-[13.5px] text-muted">
+                  <p className="px-5.5 pb-4.5 text-[13.5px] text-muted">
                     {faq.answer}
                   </p>
                 )}
