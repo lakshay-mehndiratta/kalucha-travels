@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Destination {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  name             String
+  country          String
+  heroImage        String
+  shortDescription String
+  packages         Package[]
+  createdAt        DateTime  @default(now())
+}
+
+model Package {
+  id               String       @id @default(cuid())
+  destinationId    String
+  destination      Destination  @relation(fields: [destinationId], references: [id])
+  name             String
+  durationDays     Int
+  durationNights   Int
+  basePrice        Int
+  includedServices String[]
+  itinerary        ItineraryDay[]
+  attractions      Attraction[]
+  enquiries        Enquiry[]
+  createdAt        DateTime     @default(now())
+}
+
+model ItineraryDay {
+  id          String   @id @default(cuid())
+  packageId   String
+  package     Package  @relation(fields: [packageId], references: [id])
+  dayNumber   Int
+  title       String
+  description String
+}
+
+model Attraction {
+  id          String    @id @default(cuid())
+  packageId   String
+  package     Package   @relation(fields: [packageId], references: [id])
+  name        String
+  description String
+  price       Int
+  image       String
+  includedByDefault Boolean @default(true)
+}
+
+model Enquiry {
+  id                   String        @id @default(cuid())
+  packageId            String
+  package              Package       @relation(fields: [packageId], references: [id])
+  selectedAttractionIds String[]
+  estimatedPrice       Int
+  name                 String
+  email                String
+  phone                String
+  travelDate           DateTime?
+  numTravelers         Int           @default(1)
+  message              String?
+  status               EnquiryStatus @default(NEW)
+  createdAt            DateTime      @default(now())
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  CLOSED
+}
