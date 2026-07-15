@@ -5,9 +5,9 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    // Migrations need a DIRECT (non-pooled) connection
     url: env("DIRECT_URL"),
   },
 });
