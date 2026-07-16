@@ -5,6 +5,8 @@ import {
   FaYoutube,
   FaLinkedinIn,
 } from "react-icons/fa6";
+import Image from "next/image";
+import logo from "@/assets/kalucha_travels_logo.png";
 
 const quickLinks = [
   { href: "/", label: "Home" },
@@ -40,9 +42,15 @@ export default function Footer() {
         <div className="grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-7.5 pb-11 border-b border-white/10">
           <div>
             <div className="flex items-center gap-2.5">
-                <div className="w-9.5 h-9.5 rounded-[9px] bg-orange flex items-center justify-center text-white font-serif font-bold text-xl">
-                    K
-                </div>
+                <Link href="/" className="inline-flex items-center">
+                  <Image
+                    src={logo}
+                    alt="Kalucha Travels"
+                    width={160}
+                    height={52}
+                    className="h-12 w-auto object-contain rounded-lg"
+                  />
+                </Link>
                 <div>
                     <div className="font-serif font-bold text-lg leading-[1.05] text-white">
                     Kalucha

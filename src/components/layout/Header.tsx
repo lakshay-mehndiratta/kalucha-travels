@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import Image from "next/image";
+import logo from "@/assets/kalucha_travels_logo.png";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -14,10 +16,15 @@ export default function Header() {
   return (
     <header className="relative z-10 pt-4 px-6">
       <div className="max-w-6xl mx-auto bg-white/97 rounded-2xl px-5 py-3 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
-        <Link href="#home" className="flex items-center gap-2.5 text-navy">
-          <div className="w-9.5 h-9.5 rounded-[9px] bg-orange flex items-center justify-center text-white font-serif font-bold text-xl">
-            K
-          </div>
+        <Link href="/" className="flex items-center gap-2.5 text-navy">
+          <Image
+            src={logo}
+            alt="Kalucha Travels"
+            width={150}
+            height={48}
+            priority
+            className="h-10 w-auto object-contain rounded-lg"
+          />
           <div>
             <div className="font-serif font-bold text-lg leading-[1.05] text-navy">
               Kalucha
