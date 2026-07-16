@@ -3,7 +3,14 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const enquiries = await prisma.enquiry.findMany({
-    include: { package: { include: { destination: true } } },
+    include: {
+      package: {
+        include: {
+          destination: true,
+          attractions: true,
+        },
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -19,6 +26,8 @@ export async function GET() {
     { header: "Travelers", key: "travelers", width: 12 },
     { header: "Travel Date", key: "travelDate", width: 14 },
     { header: "Estimated Price (INR)", key: "price", width: 18 },
+    { header: "Included Attractions", key: "included", width: 32 },
+    { header: "Selected Add-ons", key: "addOns", width: 32 },
     { header: "Status", key: "status", width: 14 },
     { header: "Message", key: "message", width: 32 },
     { header: "Submitted On", key: "createdAt", width: 16 },
@@ -27,6 +36,15 @@ export async function GET() {
   sheet.getRow(1).font = { bold: true };
 
   enquiries.forEach((e) => {
+    const included = e.package.attractions
+      .filter((a) => a.includedByDefault)
+      .map((a) => a.name)
+      .join(", ");
+    const addOns = e.package.attractions
+      .filter((a) => e.selectedAttractionIds.includes(a.id))
+      .map((a) => a.name)
+      .join(", ");
+
     sheet.addRow({
       name: e.name,
       email: e.email,
@@ -36,6 +54,8 @@ export async function GET() {
       travelers: e.numTravelers,
       travelDate: e.travelDate ? e.travelDate.toLocaleDateString("en-IN") : "",
       price: e.estimatedPrice,
+      included,
+      addOns,
       status: e.status,
       message: e.message ?? "",
       createdAt: e.createdAt.toLocaleDateString("en-IN"),

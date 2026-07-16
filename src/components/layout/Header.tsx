@@ -2,7 +2,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 
 const navLinks = [
-  { href: "#home", label: "Home" },
+  { href: "/", label: "Home" },
   { href: "#about", label: "About Us" },
   { href: "#services", label: "Visa Services" },
   { href: "#packages", label: "Holiday Packages" },

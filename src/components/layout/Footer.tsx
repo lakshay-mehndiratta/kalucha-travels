@@ -7,7 +7,7 @@ import {
 } from "react-icons/fa6";
 
 const quickLinks = [
-  { href: "#home", label: "Home" },
+  { href: "/", label: "Home" },
   { href: "#about", label: "About Us" },
   { href: "#services", label: "Visa Services" },
   { href: "#packages", label: "Holiday Packages" },
