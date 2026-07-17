@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import StatusSelect from "@/components/admin/StatusSelect";
 import ExportButton from "@/components/admin/ExportButton";
 import Footer from "@/components/layout/Footer";
+import SignOutButton from "@/components/admin/SignOutButton";
 
 export default async function AdminPage() {
   const enquiries = await prisma.enquiry.findMany({
@@ -29,7 +30,10 @@ export default async function AdminPage() {
                 {enquiries.length} total enquir{enquiries.length === 1 ? "y" : "ies"}
               </p>
             </div>
-            <ExportButton />
+            <div className="flex items-center gap-4">
+              <ExportButton />
+              <SignOutButton />
+            </div>
           </div>
 
           <div className="bg-white border border-line rounded-brand overflow-hidden">
