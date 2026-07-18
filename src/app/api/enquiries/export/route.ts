@@ -23,8 +23,11 @@ export async function GET() {
     { header: "Phone", key: "phone", width: 18 },
     { header: "Destination", key: "destination", width: 16 },
     { header: "Package", key: "packageName", width: 20 },
-    { header: "Travelers", key: "travelers", width: 12 },
-    { header: "Travel Date", key: "travelDate", width: 14 },
+    { header: "Adults", key: "adults", width: 10 },
+    { header: "Children", key: "children", width: 10 },
+    { header: "Infants", key: "infants", width: 10 },
+    { header: "Seniors", key: "seniors", width: 10 },
+    { header: "Travel Window", key: "travelWindow", width: 26 },
     { header: "Estimated Price (INR)", key: "price", width: 18 },
     { header: "Included Attractions", key: "included", width: 32 },
     { header: "Selected Add-ons", key: "addOns", width: 32 },
@@ -44,6 +47,10 @@ export async function GET() {
       .filter((a) => e.selectedAttractionIds.includes(a.id))
       .map((a) => a.name)
       .join(", ");
+    const travelWindow =
+      e.travelWindowStart && e.travelWindowEnd
+        ? `${e.travelWindowStart.toLocaleDateString("en-IN")} – ${e.travelWindowEnd.toLocaleDateString("en-IN")}`
+        : "Flexible";
 
     sheet.addRow({
       name: e.name,
@@ -51,8 +58,11 @@ export async function GET() {
       phone: e.phone,
       destination: e.package.destination.name,
       packageName: e.package.name,
-      travelers: e.numTravelers,
-      travelDate: e.travelDate ? e.travelDate.toLocaleDateString("en-IN") : "",
+      adults: e.adults,
+      children: e.children,
+      infants: e.infants,
+      seniors: e.seniors,
+      travelWindow,
       price: e.estimatedPrice,
       included,
       addOns,

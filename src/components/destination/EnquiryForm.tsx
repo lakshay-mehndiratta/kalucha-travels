@@ -12,6 +12,13 @@ const countryCodes = [
   { code: "+61", label: "🇦🇺 +61" },
 ];
 
+const travelerFields = [
+  { key: "adults", label: "Adults", hint: "18+" },
+  { key: "children", label: "Children", hint: "2–17" },
+  { key: "infants", label: "Infants", hint: "0–2" },
+  { key: "seniors", label: "Senior Citizens", hint: "60+" },
+] as const;
+
 export default function EnquiryForm({
   packageId,
   selectedAttractionIds,
@@ -26,8 +33,12 @@ export default function EnquiryForm({
     email: "",
     countryCode: "+91",
     phone: "",
-    travelDate: "",
-    numTravelers: 1,
+    travelWindowStart: "",
+    travelWindowEnd: "",
+    adults: 2,
+    children: 0,
+    infants: 0,
+    seniors: 0,
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">(
@@ -39,8 +50,21 @@ export default function EnquiryForm({
     setForm({ ...form, phone: digitsOnly });
   };
 
+  const handleTravelerChange = (key: (typeof travelerFields)[number]["key"], value: number) => {
+    setForm({ ...form, [key]: Math.max(0, value) });
+  };
+
+  const [fieldError, setFieldError] = useState("");
+
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFieldError("");
+
+    if (form.adults < 1) {
+      setFieldError("At least 1 adult is required per booking.");
+      return;
+    }
+
     setStatus("submitting");
     try {
       const res = await fetch("/api/enquiries", {
@@ -53,15 +77,27 @@ export default function EnquiryForm({
           name: form.name,
           email: form.email,
           phone: `${form.countryCode} ${form.phone}`,
-          travelDate: form.travelDate,
-          numTravelers: form.numTravelers,
+          travelWindowStart: form.travelWindowStart,
+          travelWindowEnd: form.travelWindowEnd,
+          adults: form.adults,
+          children: form.children,
+          infants: form.infants,
+          seniors: form.seniors,
           message: form.message,
         }),
       });
-      if (!res.ok) throw new Error("Failed to submit");
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setFieldError(data?.error ?? "Something went wrong. Please try again.");
+        setStatus("idle");
+        return;
+      }
+
       setStatus("success");
     } catch {
-      setStatus("error");
+      setFieldError("Network error. Please check your connection and try again.");
+      setStatus("idle");
     }
   };
 
@@ -80,6 +116,23 @@ export default function EnquiryForm({
   const inputClass =
     "w-full border border-line rounded-lg px-3.5 py-2.5 text-sm";
   const labelClass = "block text-[12.5px] font-semibold text-navy mb-1.5";
+
+  const totalTravelers = form.adults + form.children + form.infants + form.seniors;
+
+  const todayStr = new Date().toISOString().split("T")[0];
+  const oneYearFromNowStr = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 1);
+    return d.toISOString().split("T")[0];
+  })();
+
+  const maxLatestDate = (() => {
+    if (!form.travelWindowStart) return oneYearFromNowStr;
+    const d = new Date(form.travelWindowStart);
+    d.setDate(d.getDate() + 14);
+    const capped = d.toISOString().split("T")[0];
+    return capped < oneYearFromNowStr ? capped : oneYearFromNowStr;
+  })();
 
   return (
     <form
@@ -147,35 +200,81 @@ export default function EnquiryForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3.5">
-          <div>
-            <label className={labelClass} htmlFor="travelDate">
-              Preferred Travel Date
-            </label>
-            <input
-              id="travelDate"
-              type="date"
-              value={form.travelDate}
-              min={new Date().toISOString().split("T")[0]}
-              onChange={(e) => setForm({ ...form, travelDate: e.target.value })}
-              className={inputClass}
-            />
+        <div>
+          <label className={labelClass}>Preferred Travel Window</label>
+          <p className="text-[11.5px] text-muted mb-2">
+            Give us your earliest and latest options — any 3–4 consecutive
+            days within this window works.
+          </p>
+          <div className="grid grid-cols-2 gap-3.5">
+            <div>
+              <label className="block text-[11px] text-muted mb-1" htmlFor="travelWindowStart">
+                Earliest Date
+              </label>
+              <input
+                id="travelWindowStart"
+                type="date"
+                value={form.travelWindowStart}
+                min={todayStr}
+                max={oneYearFromNowStr}
+                onChange={(e) =>
+                  setForm({ ...form, travelWindowStart: e.target.value, travelWindowEnd: "" })
+                }
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] text-muted mb-1" htmlFor="travelWindowEnd">
+                Latest Date
+              </label>
+              <input
+                id="travelWindowEnd"
+                type="date"
+                value={form.travelWindowEnd}
+                min={form.travelWindowStart || todayStr}
+                max={maxLatestDate}
+                disabled={!form.travelWindowStart}
+                onChange={(e) => setForm({ ...form, travelWindowEnd: e.target.value })}
+                className={inputClass}
+              />
+            </div>
           </div>
-          <div>
-            <label className={labelClass} htmlFor="numTravelers">
-              Number of Travelers
-            </label>
-            <input
-              id="numTravelers"
-              type="number"
-              min={1}
-              max={20}
-              value={form.numTravelers}
-              onChange={(e) =>
-                setForm({ ...form, numTravelers: Number(e.target.value) })
-              }
-              className={inputClass}
-            />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Travelers{" "}
+            <span className="font-normal text-muted normal-case">
+              ({totalTravelers} total)
+            </span>
+          </label>
+          <div className="border border-line rounded-lg divide-y divide-line overflow-hidden">
+            {travelerFields.map((field) => (
+              <div
+                key={field.key}
+                className="flex items-center justify-between px-3.5 py-2.5"
+              >
+                <div>
+                  <div className="text-[13.5px] text-navy font-medium">
+                    {field.label}
+                  </div>
+                  <div className="text-[11px] text-muted">{field.hint}</div>
+                </div>
+                <input
+                  type="number"
+                  min={0}
+                  max={20}
+                  value={form[field.key]}
+                  onChange={(e) =>
+                    handleTravelerChange(field.key, Number(e.target.value))
+                  }
+                  className="w-16 border border-line rounded-lg px-2 py-1.5 text-sm text-center"
+                />
+                {field.key === "adults" && form.adults < 1 && (
+                  <p className="text-red-600 text-[11px] mt-1">Required — at least 1</p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -200,10 +299,8 @@ export default function EnquiryForm({
       >
         {status === "submitting" ? "Submitting..." : "Submit Enquiry →"}
       </button>
-      {status === "error" && (
-        <p className="text-red-600 text-xs mt-2">
-          Something went wrong. Please try again.
-        </p>
+      {fieldError && (
+        <p className="text-red-600 text-xs mt-2">{fieldError}</p>
       )}
     </form>
   );

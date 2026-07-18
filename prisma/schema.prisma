@@ -53,19 +53,23 @@ model Attraction {
 }
 
 model Enquiry {
-  id                   String        @id @default(cuid())
-  packageId            String
-  package              Package       @relation(fields: [packageId], references: [id])
+  id                    String        @id @default(cuid())
+  packageId             String
+  package               Package       @relation(fields: [packageId], references: [id])
   selectedAttractionIds String[]
-  estimatedPrice       Int
-  name                 String
-  email                String
-  phone                String
-  travelDate           DateTime?
-  numTravelers         Int           @default(1)
-  message              String?
-  status               EnquiryStatus @default(NEW)
-  createdAt            DateTime      @default(now())
+  estimatedPrice        Int
+  name                  String
+  email                 String
+  phone                 String
+  travelWindowStart     DateTime?
+  travelWindowEnd       DateTime?
+  adults                Int           @default(1)
+  children              Int           @default(0)
+  infants               Int           @default(0)
+  seniors               Int           @default(0)
+  message               String?
+  status                EnquiryStatus @default(NEW)
+  createdAt             DateTime      @default(now())
 }
 
 enum EnquiryStatus {

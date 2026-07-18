@@ -45,7 +45,7 @@ export default async function AdminPage() {
                     <th className="px-5 py-3.5 font-semibold">Contact</th>
                     <th className="px-5 py-3.5 font-semibold">Package</th>
                     <th className="px-5 py-3.5 font-semibold">Travelers</th>
-                    <th className="px-5 py-3.5 font-semibold">Travel Date</th>
+                    <th className="px-5 py-3.5 font-semibold">Travel Window</th>
                     <th className="px-5 py-3.5 font-semibold">Est. Price</th>
                     <th className="px-5 py-3.5 font-semibold">Status</th>
                     <th className="px-5 py-3.5 font-semibold">Attractions</th>
@@ -73,11 +73,20 @@ export default async function AdminPage() {
                         </div>
                         <div className="text-muted">{enquiry.package.name}</div>
                       </td>
-                      <td className="px-5 py-4 text-[13px]">{enquiry.numTravelers}</td>
                       <td className="px-5 py-4 text-[13px]">
-                        {enquiry.travelDate
-                          ? new Date(enquiry.travelDate).toLocaleDateString("en-IN")
-                          : "—"}
+                        <div className="font-semibold text-navy">
+                          {enquiry.adults + enquiry.children + enquiry.infants + enquiry.seniors} total
+                        </div>
+                        <div className="text-[11.5px] text-muted">
+                          {enquiry.adults}A · {enquiry.children}C · {enquiry.infants}I · {enquiry.seniors}S
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-[13px]">
+                        {enquiry.travelWindowStart && enquiry.travelWindowEnd
+                          ? `${new Date(enquiry.travelWindowStart).toLocaleDateString("en-IN")} – ${new Date(
+                              enquiry.travelWindowEnd
+                            ).toLocaleDateString("en-IN")}`
+                          : "Flexible"}
                       </td>
                       <td className="px-5 py-4 text-[13px] font-semibold text-orange-dark">
                         ₹{enquiry.estimatedPrice.toLocaleString("en-IN")}
