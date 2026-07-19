@@ -32,28 +32,27 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-cream py-20">
+    <section className="bg-cream py-14 lg:py-20">
       <Container>
-        <div className="text-left mb-12">
+        <div className="text-left mb-9 lg:mb-12">
           <Eyebrow>How It Works</Eyebrow>
-          <h2 className="text-[34px] leading-tight text-navy">
-            Your Journey in{" "}
-            <span className="text-orange">4 Easy Steps</span>
+          <h2 className="text-[26px] sm:text-[30px] lg:text-[34px] leading-tight text-navy">
+            Your Journey in <span className="text-orange">4 Easy Steps</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-4 gap-5 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 relative">
           {steps.map((step, i) => {
             const Icon = step.icon;
             return (
               <div
                 key={step.title}
-                className="relative bg-white border border-line rounded-brand px-5 py-6.5"
+                className="relative bg-white border border-line rounded-brand px-5 py-[26px]"
               >
-                <div className="w-7.5 h-7.5 rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold mb-9">
+                <div className="w-[30px] h-[30px] rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold mb-9">
                   {String(i + 1).padStart(2, "0")}
                 </div>
-                <div className="absolute top-5.5 right-5 w-10 h-10 rounded-[10px] bg-[#fdece2] text-orange flex items-center justify-center text-lg">
+                <div className="absolute top-[22px] right-5 w-10 h-10 rounded-[10px] bg-[#fdece2] text-orange flex items-center justify-center text-lg">
                   <Icon />
                 </div>
                 <h4 className="text-base text-navy mb-1.5">{step.title}</h4>
