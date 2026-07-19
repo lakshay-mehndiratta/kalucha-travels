@@ -45,9 +45,9 @@ export default function TravelersClassPicker({
       <h4 className="text-sm font-bold text-navy uppercase tracking-wide mb-3.5">
         Travellers &amp; Class ({total} total)
       </h4>
-      <div className="grid grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
         {fields.map((f) => (
-          <div key={f.key} className="border border-line rounded-lg px-3 py-2.5">
+          <div key={f.key} className="border border-line rounded-lg px-2 sm:px-3 py-2.5">
             <div className="text-[13px] text-navy font-medium">{f.label}</div>
             <div className="text-[11px] text-muted mb-2">{f.hint}</div>
             <div className="flex items-center justify-between">

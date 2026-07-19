@@ -12,7 +12,7 @@ export default function FlightsPage() {
         <Container>
           <div className="text-center mb-10">
             <Eyebrow className="justify-center">Flight Booking</Eyebrow>
-            <h1 className="text-[34px] leading-tight text-navy">
+            <h1 className="text-[26px] sm:text-[30px] lg:text-[34px] leading-tight text-navy">
               Book Your Next <span className="text-orange">Flight</span>
             </h1>
             <p className="text-muted text-sm mt-2 max-w-md mx-auto">

@@ -223,24 +223,24 @@ export default function FlightBookingForm() {
   const labelClass = "block text-[12.5px] font-semibold text-navy mb-1.5";
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-5">
+    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-5 px-4 sm:px-0">
       <TripTypeTabs value={tripType} onChange={setTripType} />
 
       {(tripType === "ONE_WAY" || tripType === "ROUND_TRIP") && (
         <div className="bg-white border border-line rounded-brand p-5">
-          <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-end mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-3 items-end mb-4">
             <AirportSelect label="From" value={origin} onChange={setOrigin} />
             <button
               type="button"
               onClick={swapOriginDestination}
-              className="w-9 h-9 rounded-full border border-line bg-cream text-navy flex items-center justify-center hover:bg-orange hover:text-white hover:border-orange transition-colors mb-0.5"
+              className="w-9 h-9 rounded-full border border-line bg-cream text-navy flex items-center justify-center hover:bg-orange hover:text-white hover:border-orange transition-colors mb-0.5 mx-auto sm:mx-0 rotate-90 sm:rotate-0"
               aria-label="Swap origin and destination"
             >
               ⇄
             </button>
             <AirportSelect label="To" value={destination} onChange={setDestination} />
           </div>
-          <div className={`grid ${tripType === "ROUND_TRIP" ? "grid-cols-2" : "grid-cols-1"} gap-3.5`}>
+          <div className={`grid ${tripType === "ROUND_TRIP" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} gap-3.5`}>
             <div>
               <label className={labelClass}>Departure Date</label>
               <input
@@ -292,7 +292,7 @@ export default function FlightBookingForm() {
                 <button
                   type="button"
                   onClick={() => swapLeg(i)}
-                  className="w-9 h-9 rounded-full border border-line bg-cream text-navy flex items-center justify-center hover:bg-orange hover:text-white hover:border-orange transition-colors mb-0.5"
+                  className="w-9 h-9 rounded-full border border-line bg-cream text-navy flex items-center justify-center hover:bg-orange hover:text-white hover:border-orange transition-colors mb-0.5 mx-auto sm:mx-0 rotate-90 sm:rotate-0"
                   aria-label={`Swap flight ${i + 1} origin and destination`}
                 >
                   ⇄
@@ -338,7 +338,7 @@ export default function FlightBookingForm() {
         <h4 className="text-sm font-bold text-navy uppercase tracking-wide mb-3.5">
           Additional Details (Optional)
         </h4>
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
             <label className={labelClass}>Preferred Airline</label>
             <input

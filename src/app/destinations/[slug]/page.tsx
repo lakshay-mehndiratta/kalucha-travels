@@ -35,7 +35,7 @@ export default async function DestinationPage({
 
   return (
     <main>
-      <div className="relative h-105">
+      <div className="relative h-[320px] sm:h-[380px] lg:h-[420px]">
         <Image
           src={destination.heroImage}
           alt={destination.name}
@@ -48,25 +48,27 @@ export default async function DestinationPage({
 
         <Header />
 
-        <Container className="relative z-3 h-[calc(100%-90px)] flex flex-col justify-end pb-10 text-white">
+        <Container className="relative z-[3] h-[calc(100%-90px)] flex flex-col justify-end pb-8 lg:pb-10 text-white">
           <Eyebrow className="text-[#ffb083]">{destination.country}</Eyebrow>
-          <h1 className="text-[42px] text-white">{destination.name}</h1>
-          <p className="text-[#e7edf0] max-w-130 mt-2">
+          <h1 className="text-[30px] sm:text-[36px] lg:text-[42px] text-white">
+            {destination.name}
+          </h1>
+          <p className="text-[#e7edf0] max-w-full sm:max-w-[520px] mt-2 text-[14px] sm:text-base">
             {destination.shortDescription}
           </p>
         </Container>
       </div>
 
-      <Container className="py-16 grid grid-cols-[1.3fr_1fr] gap-12 items-start">
+      <Container className="py-10 lg:py-16 grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-8 lg:gap-12 items-start">
         <div>
           <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <h2 className="text-2xl text-navy">{pkg.name}</h2>
+            <h2 className="text-xl sm:text-2xl text-navy">{pkg.name}</h2>
             <span className="text-sm text-muted">
               {pkg.durationDays} Days / {pkg.durationNights} Nights
             </span>
           </div>
 
-          <div className="mb-10">
+          <div className="mb-8 lg:mb-10">
             <h3 className="text-sm font-bold text-navy uppercase tracking-wide mb-3">
               Included Services
             </h3>
@@ -88,13 +90,17 @@ export default async function DestinationPage({
             </h3>
             <div className="space-y-4">
               {pkg.itinerary.map((day) => (
-                <div key={day.id} className="flex gap-4">
-                  <div className="w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div key={day.id} className="flex gap-3 sm:gap-4">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-navy text-white flex items-center justify-center text-[11px] sm:text-xs font-bold shrink-0">
                     D{day.dayNumber}
                   </div>
                   <div>
-                    <h4 className="text-[15px] text-navy mb-1">{day.title}</h4>
-                    <p className="text-[13.5px] text-muted">{day.description}</p>
+                    <h4 className="text-[14.5px] sm:text-[15px] text-navy mb-1">
+                      {day.title}
+                    </h4>
+                    <p className="text-[13px] sm:text-[13.5px] text-muted">
+                      {day.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -102,7 +108,7 @@ export default async function DestinationPage({
           </div>
         </div>
 
-        <div className="sticky top-6">
+        <div className="lg:sticky lg:top-6">
           <PackageCustomizer
             packageId={pkg.id}
             basePrice={pkg.basePrice}

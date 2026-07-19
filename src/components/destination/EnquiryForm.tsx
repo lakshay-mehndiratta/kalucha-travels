@@ -212,7 +212,7 @@ export default function EnquiryForm({
             Give us your earliest and latest options — any 3–4 consecutive
             days within this window works.
           </p>
-          <div className="grid grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label className="block text-[11px] text-muted mb-1" htmlFor="travelWindowStart">
                 Earliest Date

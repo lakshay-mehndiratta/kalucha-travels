@@ -7,7 +7,7 @@ import Logo from "@/components/ui/Logo";
 import { HiMenu, HiX } from "react-icons/hi";
 
 const navLinks = [
-  { href: "#home", label: "Home" },
+  { href: "/", label: "Home" },
   { href: "#about", label: "About Us" },
   { href: "#services", label: "Visa Services" },
   { href: "#packages", label: "Holiday Packages" },
