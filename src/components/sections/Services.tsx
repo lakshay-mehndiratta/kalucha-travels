@@ -62,19 +62,19 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="bg-[#f3ede3] py-20">
+    <section id="services" className="bg-[#f3ede3] py-14 lg:py-20">
       <Container>
-        <div className="flex justify-between items-end gap-5 flex-wrap mb-10">
+        <div className="flex justify-between items-end gap-5 flex-wrap mb-8 lg:mb-10">
           <div>
             <Eyebrow>Our Services</Eyebrow>
-            <h2 className="text-[34px] leading-tight max-w-105 text-navy">
+            <h2 className="text-[26px] sm:text-[30px] lg:text-[34px] leading-tight max-w-full lg:max-w-[420px] text-navy">
               Travel Solutions Tailored for{" "}
               <span className="text-orange">You</span>
             </h2>
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-4.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[14px] sm:gap-[18px]">
           {services.map((service) => {
             const Icon = service.icon;
             return (
@@ -82,13 +82,11 @@ export default function Services() {
                 key={service.title}
                 className="bg-white border border-line rounded-brand px-5 py-6 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(14,42,58,0.08)]"
               >
-                <div className="w-10.5 h-10.5 rounded-[10px] bg-orange text-white flex items-center justify-center text-[19px] mb-4">
+                <div className="w-[42px] h-[42px] rounded-[10px] bg-orange text-white flex items-center justify-center text-[19px] mb-4">
                   <Icon />
                 </div>
-                <h4 className="text-[16.5px] text-navy mb-2">
-                  {service.title}
-                </h4>
-                <p className="text-[13.5px] text-muted mb-3.5 min-h-13">
+                <h4 className="text-[16.5px] text-navy mb-2">{service.title}</h4>
+                <p className="text-[13.5px] text-muted mb-3.5 min-h-0 sm:min-h-[52px]">
                   {service.description}
                 </p>
                 <div className="text-[13px] font-bold text-orange-dark">
