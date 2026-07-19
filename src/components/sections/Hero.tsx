@@ -38,8 +38,8 @@ export default function Hero() {
           Phagwara to the world.
         </p>
         <div className="flex gap-3.5 mb-14">
-          <Button href="#apply" variant="primary">
-            Apply for Visa →
+          <Button href="/flights" variant="primary">
+            Book Flights →
           </Button>
           <Button href="#packages" variant="outline-light">
             Explore Packages →
