@@ -78,3 +78,45 @@ enum EnquiryStatus {
   CONVERTED
   CLOSED
 }
+
+enum TripType {
+  ONE_WAY
+  ROUND_TRIP
+  MULTI_CITY
+}
+
+enum TravelClass {
+  ECONOMY
+  PREMIUM_ECONOMY
+  BUSINESS
+  FIRST
+}
+
+model FlightEnquiry {
+  id               String        @id @default(cuid())
+  tripType         TripType
+  legs             FlightLeg[]
+  adults           Int           @default(1)
+  children         Int           @default(0)
+  infants          Int           @default(0)
+  travelClass      TravelClass   @default(ECONOMY)
+  preferredAirline String?
+  budget           Int?
+  name             String
+  email            String
+  phone            String
+  status           EnquiryStatus @default(NEW)
+  createdAt        DateTime      @default(now())
+}
+
+model FlightLeg {
+  id              String        @id @default(cuid())
+  flightEnquiryId String
+  flightEnquiry   FlightEnquiry @relation(fields: [flightEnquiryId], references: [id])
+  legOrder        Int
+  originCode      String
+  originCity      String
+  destinationCode String
+  destinationCity String
+  date            DateTime
+}

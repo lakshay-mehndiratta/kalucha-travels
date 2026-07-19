@@ -65,6 +65,12 @@ export default function EnquiryForm({
       return;
     }
 
+    if (form.phone.length !== 10) {
+      setFieldError("Please enter a valid 10-digit phone number.");
+      setStatus("idle");
+      return;
+    }
+
     setStatus("submitting");
     try {
       const res = await fetch("/api/enquiries", {

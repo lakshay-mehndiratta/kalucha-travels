@@ -21,7 +21,9 @@ const enquirySchema = z
     estimatedPrice: z.number().int().positive(),
     name: z.string().min(2),
     email: z.string().email(),
-    phone: z.string().min(7),
+    phone: z
+      .string()
+      .regex(/^\+\d{1,4} \d{10}$/, "Phone number must be a valid 10-digit number"),
     travelWindowStart: z.string().optional(),
     travelWindowEnd: z.string().optional(),
     adults: z.number().int().min(1, "At least 1 adult is required per booking"),
