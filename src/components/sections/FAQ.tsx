@@ -36,11 +36,11 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="bg-cream py-20">
-      <Container className="grid grid-cols-[0.9fr_1.4fr] gap-10 items-start">
+    <section className="bg-cream py-14 lg:py-20">
+      <Container className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.4fr] gap-6 lg:gap-10 items-start">
         <div>
           <Eyebrow>FAQs</Eyebrow>
-          <h2 className="text-[34px] leading-tight text-navy">
+          <h2 className="text-[26px] sm:text-[30px] lg:text-[34px] leading-tight text-navy">
             Frequently Asked <span className="text-orange">Questions</span>
           </h2>
         </div>
@@ -55,7 +55,7 @@ export default function FAQ() {
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="w-full flex justify-between items-center gap-4 px-5.5 py-4.5 text-[15px] font-semibold text-navy cursor-pointer text-left"
+                  className="w-full flex justify-between items-center gap-4 px-4 sm:px-[22px] py-4 sm:py-[18px] text-[14px] sm:text-[15px] font-semibold text-navy cursor-pointer text-left"
                 >
                   {faq.question}
                   <span className="text-orange text-xl font-normal shrink-0">
@@ -63,7 +63,7 @@ export default function FAQ() {
                   </span>
                 </button>
                 {isOpen && (
-                  <p className="px-5.5 pb-4.5 text-[13.5px] text-muted">
+                  <p className="px-4 sm:px-[22px] pb-4 sm:pb-[18px] text-[13.5px] text-muted">
                     {faq.answer}
                   </p>
                 )}
