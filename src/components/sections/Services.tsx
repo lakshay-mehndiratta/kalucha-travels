@@ -89,9 +89,6 @@ export default function Services() {
                 <p className="text-[13.5px] text-muted mb-3.5 min-h-0 sm:min-h-[52px]">
                   {service.description}
                 </p>
-                <div className="text-[13px] font-bold text-orange-dark">
-                  Learn More →
-                </div>
               </div>
             );
           })}
