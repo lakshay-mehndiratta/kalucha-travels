@@ -1,5 +1,7 @@
 "use client";
 
+import { FaChevronDown } from "react-icons/fa6";
+
 const classes = [
   { value: "ECONOMY", label: "Economy" },
   { value: "PREMIUM_ECONOMY", label: "Premium Economy" },
@@ -75,17 +77,20 @@ export default function TravelersClassPicker({
         <label className="block text-[12.5px] font-semibold text-navy mb-1.5">
           Travel Class
         </label>
-        <select
-          value={travelClass}
-          onChange={(e) => onClassChange(e.target.value as TravelClass)}
-          className="w-full border border-line rounded-lg px-3.5 py-2.5 text-sm bg-white"
-        >
-          {classes.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.label}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            value={travelClass}
+            onChange={(e) => onClassChange(e.target.value as TravelClass)}
+            className="w-full border border-line rounded-lg pl-3.5 pr-9 py-2.5 text-sm bg-white cursor-pointer"
+          >
+            {classes.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+          <FaChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-muted pointer-events-none" />
+        </div>
       </div>
     </div>
   );

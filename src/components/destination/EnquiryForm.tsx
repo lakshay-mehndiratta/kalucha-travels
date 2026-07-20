@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SubmitEvent } from "react";
+import { FaChevronDown } from "react-icons/fa6";
 
 const countryCodes = [
   { code: "+91", label: "🇮🇳 +91" },
@@ -181,17 +182,20 @@ export default function EnquiryForm({
             Phone Number
           </label>
           <div className="flex gap-2">
-            <select
-              value={form.countryCode}
-              onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
-              className="border border-line rounded-lg px-2 py-2.5 text-sm bg-white shrink-0"
-            >
-              {countryCodes.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative shrink-0">
+              <select
+                value={form.countryCode}
+                onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
+                className="appearance-none border border-line rounded-lg pl-2.5 pr-7 py-2.5 text-sm bg-white"
+              >
+                {countryCodes.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <FaChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted pointer-events-none" />
+            </div>
             <input
               id="phone"
               required

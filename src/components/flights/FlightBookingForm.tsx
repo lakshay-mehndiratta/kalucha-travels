@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SubmitEvent } from "react";
+import { FaChevronDown } from "react-icons/fa6";
 import AirportSelect, { Airport } from "./AirportSelect";
 import TripTypeTabs, { TripType } from "./TripTypeTabs";
 import TravelersClassPicker, { Travelers, TravelClass } from "./TravelersClassPicker";
@@ -405,17 +406,20 @@ export default function FlightBookingForm() {
           <div>
             <label className={labelClass}>Phone Number</label>
             <div className="flex gap-2">
-              <select
-                value={contact.countryCode}
-                onChange={(e) => setContact({ ...contact, countryCode: e.target.value })}
-                className="border border-line rounded-lg px-2 py-2.5 text-sm bg-white shrink-0"
-              >
-                {countryCodes.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
+              <div className="relative shrink-0">
+                <select
+                  value={contact.countryCode} // or form.countryCode in EnquiryForm
+                  onChange={(e) => setContact({ ...contact, countryCode: e.target.value })}
+                  className="w-full border border-line rounded-lg pl-2.5 pr-7 py-2.5 text-sm bg-white cursor-pointer"
+                >
+                  {countryCodes.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+                <FaChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted pointer-events-none" />
+              </div>
               <input
                 required
                 type="tel"

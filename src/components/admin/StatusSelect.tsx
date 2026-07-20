@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
 
 type Status = "NEW" | "CONTACTED" | "CONVERTED" | "CLOSED";
 
@@ -40,16 +41,19 @@ export default function StatusSelect({
   };
 
   return (
-    <select
-      value={status}
-      disabled={saving}
-      onChange={(e) => handleChange(e.target.value as Status)}
-      className={`text-[12px] font-semibold border rounded-full px-3 py-1.5 cursor-pointer ${statusStyles[status]}`}
-    >
-      <option value="NEW">New</option>
-      <option value="CONTACTED">Contacted</option>
-      <option value="CONVERTED">Converted</option>
-      <option value="CLOSED">Closed</option>
-    </select>
+    <div className="relative inline-block">
+      <select
+        value={status}
+        disabled={saving}
+        onChange={(e) => handleChange(e.target.value as Status)}
+        className={`text-[12px] font-semibold border rounded-lg pl-3 pr-7 py-1.5 cursor-pointer ${statusStyles[status]}`}
+      >
+        <option value="NEW">New</option>
+        <option value="CONTACTED">Contacted</option>
+        <option value="CONVERTED">Converted</option>
+        <option value="CLOSED">Closed</option>
+      </select>
+      <FaChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] pointer-events-none" />
+    </div>
   );
 }
