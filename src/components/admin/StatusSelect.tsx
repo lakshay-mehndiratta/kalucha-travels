@@ -15,9 +15,11 @@ const statusStyles: Record<Status, string> = {
 export default function StatusSelect({
   enquiryId,
   currentStatus,
+  endpoint,
 }: {
   enquiryId: string;
   currentStatus: Status;
+  endpoint: string;
 }) {
   const [status, setStatus] = useState<Status>(currentStatus);
   const [saving, setSaving] = useState(false);
@@ -27,7 +29,7 @@ export default function StatusSelect({
     setStatus(newStatus);
     setSaving(true);
     try {
-      const res = await fetch(`/api/enquiries/${enquiryId}`, {
+      const res = await fetch(`${endpoint}/${enquiryId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),

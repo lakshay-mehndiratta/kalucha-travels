@@ -1,14 +1,27 @@
 import { prisma } from "@/lib/prisma";
-import StatusSelect from "@/components/admin/StatusSelect";
-import ExportButton from "@/components/admin/ExportButton";
 import Footer from "@/components/layout/Footer";
 import AdminNav from "@/components/admin/AdminNav";
 import StatusFilter from "@/components/admin/StatusFilter";
+import StatusSelect from "@/components/admin/StatusSelect";
+import ExportButton from "@/components/admin/ExportButton";
 import SignOutButton from "@/components/admin/SignOutButton";
+
+const tripTypeLabels: Record<string, string> = {
+  ONE_WAY: "One Way",
+  ROUND_TRIP: "Round Trip",
+  MULTI_CITY: "Multi City",
+};
+
+const classLabels: Record<string, string> = {
+  ECONOMY: "Economy",
+  PREMIUM_ECONOMY: "Premium Economy",
+  BUSINESS: "Business",
+  FIRST: "First Class",
+};
 
 const validStatuses = ["NEW", "CONTACTED", "CONVERTED", "CLOSED"] as const;
 
-export default async function AdminPage({
+export default async function AdminFlightsPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string }>;
@@ -18,13 +31,9 @@ export default async function AdminPage({
     ? (status as (typeof validStatuses)[number])
     : undefined;
 
-  const enquiries = await prisma.enquiry.findMany({
+  const enquiries = await prisma.flightEnquiry.findMany({
     where: activeStatus ? { status: activeStatus } : undefined,
-    include: {
-      package: {
-        include: { destination: true, attractions: true },
-      },
-    },
+    include: { legs: { orderBy: { legOrder: "asc" } } },
     orderBy: { createdAt: "desc" },
   });
 
@@ -32,21 +41,25 @@ export default async function AdminPage({
     <>
       <main className="min-h-screen bg-cream py-6 px-4 sm:py-10 sm:px-6">
         <div className="max-w-325 mx-auto">
-          <AdminNav active="destinations" />
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
-            <StatusFilter basePath="/admin" active={activeStatus ?? "ALL"} />
+          <AdminNav active="flights" />
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
             <div>
               <h1 className="text-[22px] sm:text-[28px] font-serif font-bold text-navy">
-                Enquiries
+                Flight Enquiries
               </h1>
               <p className="text-sm text-muted mt-1">
                 {enquiries.length} total enquir{enquiries.length === 1 ? "y" : "ies"}
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <ExportButton href="/api/enquiries/export" />
+              <ExportButton href="/api/flight-enquiries/export" />
               <SignOutButton />
             </div>
+          </div>
+
+          <div className="mb-6">
+            <StatusFilter basePath="/admin/flights" active={activeStatus ?? "ALL"} />
           </div>
 
           <div className="bg-white border border-line rounded-brand overflow-hidden">
@@ -56,12 +69,12 @@ export default async function AdminPage({
                   <tr className="bg-[#f3ede3] text-left text-[12px] uppercase tracking-wide text-muted">
                     <th className="px-5 py-3.5 font-semibold">Traveler</th>
                     <th className="px-5 py-3.5 font-semibold">Contact</th>
-                    <th className="px-5 py-3.5 font-semibold">Package</th>
+                    <th className="px-5 py-3.5 font-semibold">Trip Type</th>
+                    <th className="px-5 py-3.5 font-semibold">Route</th>
                     <th className="px-5 py-3.5 font-semibold">Travelers</th>
-                    <th className="px-5 py-3.5 font-semibold">Travel Window</th>
-                    <th className="px-5 py-3.5 font-semibold">Est. Price</th>
+                    <th className="px-5 py-3.5 font-semibold">Class</th>
+                    <th className="px-5 py-3.5 font-semibold">Airline / Budget</th>
                     <th className="px-5 py-3.5 font-semibold">Status</th>
-                    <th className="px-5 py-3.5 font-semibold">Attractions</th>
                     <th className="px-5 py-3.5 font-semibold">Submitted</th>
                   </tr>
                 </thead>
@@ -70,65 +83,53 @@ export default async function AdminPage({
                     <tr key={enquiry.id} className="border-t border-line align-top">
                       <td className="px-5 py-4">
                         <div className="font-semibold text-navy">{enquiry.name}</div>
-                        {enquiry.message && (
-                          <div className="text-[12px] text-muted mt-1 max-w-55">
-                            {enquiry.message}
-                          </div>
-                        )}
                       </td>
                       <td className="px-5 py-4 text-[13px]">
                         <div>{enquiry.email}</div>
                         <div className="text-muted">{enquiry.phone}</div>
                       </td>
                       <td className="px-5 py-4 text-[13px]">
-                        <div className="font-medium text-navy">
-                          {enquiry.package.destination.name}
-                        </div>
-                        <div className="text-muted">{enquiry.package.name}</div>
+                        {tripTypeLabels[enquiry.tripType]}
+                      </td>
+                      <td className="px-5 py-4 text-[13px] max-w-60">
+                        {enquiry.legs.map((leg) => (
+                          <div key={leg.id} className="mb-1 last:mb-0">
+                            <span className="font-medium text-navy">
+                              {leg.originCode} → {leg.destinationCode}
+                            </span>
+                            <span className="text-muted">
+                              {" "}
+                              ({new Date(leg.date).toLocaleDateString("en-IN")})
+                            </span>
+                          </div>
+                        ))}
                       </td>
                       <td className="px-5 py-4 text-[13px]">
                         <div className="font-semibold text-navy">
-                          {enquiry.adults + enquiry.children + enquiry.infants + enquiry.seniors} total
+                          {enquiry.adults + enquiry.children + enquiry.infants} total
                         </div>
                         <div className="text-[11.5px] text-muted">
-                          {enquiry.adults}A · {enquiry.children}C · {enquiry.infants}I · {enquiry.seniors}S
+                          {enquiry.adults}A · {enquiry.children}C · {enquiry.infants}I
                         </div>
                       </td>
                       <td className="px-5 py-4 text-[13px]">
-                        {enquiry.travelWindowStart && enquiry.travelWindowEnd
-                          ? `${new Date(enquiry.travelWindowStart).toLocaleDateString("en-IN")} – ${new Date(
-                              enquiry.travelWindowEnd
-                            ).toLocaleDateString("en-IN")}`
-                          : "Flexible"}
+                        {classLabels[enquiry.travelClass]}
                       </td>
-                      <td className="px-5 py-4 text-[13px] font-semibold text-orange-dark">
-                        ₹{enquiry.estimatedPrice.toLocaleString("en-IN")}
+                      <td className="px-5 py-4 text-[13px]">
+                        <div>{enquiry.preferredAirline || "—"}</div>
+                        <div className="text-muted">
+                          {enquiry.budget
+                            ? `₹${enquiry.budget.toLocaleString("en-IN")}`
+                            : "—"}
+                        </div>
                       </td>
                       <td className="px-5 py-4">
-                        <StatusSelect enquiryId={enquiry.id} currentStatus={enquiry.status} endpoint="/api/enquiries" />
+                        <StatusSelect
+                          enquiryId={enquiry.id}
+                          currentStatus={enquiry.status}
+                          endpoint="/api/flight-enquiries"
+                        />
                       </td>
-
-                      {(() => {
-                        const included = enquiry.package.attractions.filter(
-                          (a) => a.includedByDefault
-                        );
-                        const selected = enquiry.package.attractions.filter((a) =>
-                          enquiry.selectedAttractionIds.includes(a.id)
-                        );
-                        return (
-                          <td className="px-5 py-4 text-[12px] max-w-55">
-                            <div className="mb-1.5">
-                              <span className="text-muted font-semibold">Included: </span>
-                              {included.map((a) => a.name).join(", ") || "—"}
-                            </div>
-                            <div>
-                              <span className="text-orange-dark font-semibold">Add-ons: </span>
-                              {selected.map((a) => a.name).join(", ") || "None"}
-                            </div>
-                          </td>
-                        );
-                      })()}
-
                       <td className="px-5 py-4 text-[13px] text-muted">
                         {new Date(enquiry.createdAt).toLocaleDateString("en-IN")}
                       </td>
@@ -137,7 +138,7 @@ export default async function AdminPage({
                   {enquiries.length === 0 && (
                     <tr>
                       <td colSpan={9} className="px-5 py-10 text-center text-muted text-sm">
-                        No enquiries yet.
+                        No flight enquiries {activeStatus ? "with this status " : ""}yet.
                       </td>
                     </tr>
                   )}

@@ -20,6 +20,12 @@ const countryCodes = [
 
 const todayStr = () => new Date().toISOString().split("T")[0];
 
+const oneYearFromNowStr = () => {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().split("T")[0];
+};
+
 export default function FlightBookingForm() {
   const [tripType, setTripType] = useState<TripType>("ONE_WAY");
 
@@ -89,6 +95,10 @@ export default function FlightBookingForm() {
 
     if (budget && (Number(budget) < 1000 || Number(budget) % 1000 !== 0))
       return "Budget must be at least ₹1,000, in increments of ₹1,000.";
+
+    if (!departureDate) return "Please select a departure date.";
+    if (departureDate < todayStr()) return "Departure date cannot be in the past.";
+    if (departureDate > oneYearFromNowStr()) return "Departure date cannot be more than a year out.";
 
     if (tripType === "ONE_WAY" || tripType === "ROUND_TRIP") {
       if (!origin || !destination) return "Please select both origin and destination.";
@@ -247,6 +257,7 @@ export default function FlightBookingForm() {
               <input
                 type="date"
                 min={todayStr()}
+                max={oneYearFromNowStr()}
                 value={departureDate}
                 onChange={(e) => setDepartureDate(e.target.value)}
                 className={inputClass}
@@ -258,6 +269,7 @@ export default function FlightBookingForm() {
                 <input
                   type="date"
                   min={departureDate || todayStr()}
+                  max={oneYearFromNowStr()}
                   value={returnDate}
                   onChange={(e) => setReturnDate(e.target.value)}
                   className={inputClass}
@@ -309,6 +321,7 @@ export default function FlightBookingForm() {
                 <input
                   type="date"
                   min={i > 0 ? multiCityLegs[i - 1].date || todayStr() : todayStr()}
+                  max={oneYearFromNowStr()}
                   value={leg.date}
                   onChange={(e) => updateLeg(i, { date: e.target.value })}
                   className={inputClass}
@@ -354,7 +367,7 @@ export default function FlightBookingForm() {
             <input
               type="number"
               min={1000}
-              max={1e10}
+              max={1e8}
               step={1000}
               placeholder="e.g. 15000"
               value={budget}
@@ -365,7 +378,7 @@ export default function FlightBookingForm() {
                   return;
                 }
                 const num = Number(val);
-                setBudget(num > 1e10 ? String(1e10) : val);
+                setBudget(num > 1e8 ? String(1e8) : val);
               }}
               onBlur={(e) => {
                 const val = Number(e.target.value);
