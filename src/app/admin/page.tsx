@@ -46,6 +46,9 @@ export default async function AdminPage({
               <ExportButton href="/api/enquiries/export" />
               <SignOutButton />
             </div>
+          </div>
+
+          <div className="mb-6">
             <StatusFilter basePath="/admin" active={activeStatus ?? "ALL"} />
           </div>
 

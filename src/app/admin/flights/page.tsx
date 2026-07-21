@@ -42,8 +42,7 @@ export default async function AdminFlightsPage({
       <main className="min-h-screen bg-cream py-6 px-4 sm:py-10 sm:px-6">
         <div className="max-w-325 mx-auto">
           <AdminNav active="flights" />
-
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
             <div>
               <h1 className="text-[22px] sm:text-[28px] font-serif font-bold text-navy">
                 Flight Enquiries
