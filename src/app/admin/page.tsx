@@ -34,7 +34,6 @@ export default async function AdminPage({
         <div className="max-w-325 mx-auto">
           <AdminNav active="destinations" />
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
-            <StatusFilter basePath="/admin" active={activeStatus ?? "ALL"} />
             <div>
               <h1 className="text-[22px] sm:text-[28px] font-serif font-bold text-navy">
                 Enquiries
@@ -47,6 +46,7 @@ export default async function AdminPage({
               <ExportButton href="/api/enquiries/export" />
               <SignOutButton />
             </div>
+            <StatusFilter basePath="/admin" active={activeStatus ?? "ALL"} />
           </div>
 
           <div className="bg-white border border-line rounded-brand overflow-hidden">

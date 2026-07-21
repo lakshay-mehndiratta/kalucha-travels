@@ -43,3 +43,12 @@ select {
 select::-ms-expand {
   display: none;
 }
+
+input[type="date"] {
+  padding-right: 8px; /* extra room so the icon isn't flush against the edge */
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  margin-right: 6px;
+  padding: 4px;
+}
