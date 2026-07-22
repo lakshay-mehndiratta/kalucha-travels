@@ -6,6 +6,8 @@ import {
   HiOutlineCheckCircle,
 } from "react-icons/hi2";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const [
     totalDestinationEnquiries,
