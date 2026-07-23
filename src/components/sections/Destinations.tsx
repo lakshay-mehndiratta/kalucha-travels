@@ -13,7 +13,7 @@ const destinations = [
   },
   {
     name: "Singapore",
-    slug: null,
+    slug: "singapore",
     image:
       "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=80&auto=format",
   },
