@@ -16,9 +16,12 @@ import {
 } from "react-icons/hi2";
 import logo from "@/assets/kalucha_travels_logo.png";
 
+import { HiOutlinePencilSquare } from "react-icons/hi2";
+
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: HiOutlineHome },
   { href: "/admin/destinations", label: "Destination Enquiries", icon: HiOutlineMapPin },
+  { href: "/admin/destinations/manage", label: "Manage Destinations", icon: HiOutlinePencilSquare },
   { href: "/admin/flights", label: "Flight Enquiries", icon: HiOutlinePaperAirplane },
   { href: "/admin/settings", label: "Settings", icon: HiOutlineCog6Tooth },
 ];
@@ -44,8 +47,11 @@ export default function AdminSidebar({
     router.refresh();
   };
 
-  const isActive = (href: string) =>
-    href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+  const matchingItem = navItems
+    .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+    .sort((a, b) => b.href.length - a.href.length)[0];
+
+  const isActive = (href: string) => matchingItem?.href === href;
 
   return (
     <>
