@@ -275,6 +275,8 @@ export default function DestinationForm({
               required
               type="number"
               min={0}
+              max={1e8}
+              step={100}
               value={form.basePrice}
               onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })}
               className={inputClass}
@@ -400,23 +402,40 @@ export default function DestinationForm({
                 className={`${inputClass} min-h-[50px]`}
               />
               <div className="grid grid-cols-2 gap-2.5">
-                <input
-                  required
-                  type="number"
-                  min={0}
-                  placeholder="Price (₹)"
-                  value={attraction.price}
-                  onChange={(e) => updateAttraction(i, { price: Number(e.target.value) })}
-                  className={inputClass}
-                />
-                <input
-                  required
-                  type="url"
-                  placeholder="Image URL"
-                  value={attraction.image}
-                  onChange={(e) => updateAttraction(i, { image: e.target.value })}
-                  className={inputClass}
-                />
+                <div>
+                  <label className={labelClass}>Price (₹)</label>
+                  <input
+                    required
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={1e8}
+                    step={100}
+                    placeholder="e.g. 2500"
+                    value={attraction.price === 0 ? "" : attraction.price}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/^0+(?=\d)/, "");
+                      if (raw === "") {
+                        updateAttraction(i, { price: 0 });
+                        return;
+                      }
+                      const num = Math.min(Number(raw), 1e8);
+                      updateAttraction(i, { price: num });
+                    }}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Image URL</label>
+                  <input
+                    required
+                    type="url"
+                    placeholder="https://..."
+                    value={attraction.image}
+                    onChange={(e) => updateAttraction(i, { image: e.target.value })}
+                    className={inputClass}
+                  />
+                </div>
               </div>
               <label className="flex items-center gap-2 text-[13px] text-navy">
                 <input
