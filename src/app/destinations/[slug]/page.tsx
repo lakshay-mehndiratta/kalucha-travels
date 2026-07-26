@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { prisma } from "@/lib/prisma";
 import Container from "@/components/ui/Container";
 import Eyebrow from "@/components/ui/Eyebrow";
@@ -36,7 +36,7 @@ export default async function DestinationPage({
   return (
     <main>
       <div className="relative h-[320px] sm:h-[380px] lg:h-[420px]">
-        <Image
+        <SafeImage
           src={destination.heroImage}
           alt={destination.name}
           fill

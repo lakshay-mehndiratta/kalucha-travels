@@ -221,6 +221,24 @@ export default function DestinationForm({
             onChange={(e) => setForm({ ...form, heroImage: e.target.value })}
             className={inputClass}
           />
+
+          {form.heroImage && (
+            <div className="mt-2 relative h-32 rounded-lg overflow-hidden border border-line bg-cream">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={form.heroImage}
+                alt="Preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                }}
+              />
+              <div className="hidden absolute inset-0 flex items-center justify-center text-[12px] text-red-600 font-medium">
+                Couldn't load this image — check the URL
+              </div>
+            </div>
+          )}
         </div>
         <div>
           <label className={labelClass}>Short Description</label>
@@ -274,11 +292,21 @@ export default function DestinationForm({
             <input
               required
               type="number"
+              inputMode="numeric"
               min={0}
               max={1e8}
               step={100}
-              value={form.basePrice}
-              onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })}
+              placeholder="e.g. 45000"
+              value={form.basePrice === 0 ? "" : form.basePrice}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/^0+(?=\d)/, "");
+                if (raw === "") {
+                  setForm({ ...form, basePrice: 0 });
+                  return;
+                }
+                const num = Math.min(Number(raw), 1e8);
+                setForm({ ...form, basePrice: num });
+              }}
               className={inputClass}
             />
           </div>

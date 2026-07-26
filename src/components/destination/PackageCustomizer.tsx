@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import SafeImage from "@/components/ui/SafeImage";
 import EnquiryForm from "./EnquiryForm";
 
 type Attraction = {
@@ -54,7 +55,14 @@ export default function PackageCustomizer({
               key={a.id}
               className="flex items-center gap-3 bg-white border border-line rounded-xl px-4 py-3 opacity-90"
             >
-              <input type="checkbox" checked disabled className="w-4 h-4 accent-orange" />
+              <input type="checkbox" checked disabled className="w-4 h-4 accent-orange shrink-0" />
+              <SafeImage
+                src={a.image}
+                alt=""
+                width={44}
+                height={44}
+                className="w-11 h-11 rounded-lg object-cover shrink-0"
+              />
               <span className="flex-1 text-[14px] text-navy font-medium">{a.name}</span>
               <span className="text-[13px] text-muted">
                 ₹{a.price.toLocaleString("en-IN")}
@@ -78,7 +86,14 @@ export default function PackageCustomizer({
                 type="checkbox"
                 checked={selectedIds.includes(a.id)}
                 onChange={() => toggle(a.id)}
-                className="w-4 h-4 accent-orange"
+                className="w-4 h-4 accent-orange shrink-0"
+              />
+              <SafeImage
+                src={a.image}
+                alt=""
+                width={44}
+                height={44}
+                className="w-11 h-11 rounded-lg object-cover shrink-0"
               />
               <span className="flex-1 text-[14px] text-navy font-medium">{a.name}</span>
               <span className="text-[13px] text-muted">
