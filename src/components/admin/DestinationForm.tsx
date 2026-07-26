@@ -463,6 +463,23 @@ export default function DestinationForm({
                     onChange={(e) => updateAttraction(i, { image: e.target.value })}
                     className={inputClass}
                   />
+                  {attraction.image && (
+                    <div className="mt-2 relative h-24 w-24 rounded-lg overflow-hidden border border-line bg-cream">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={attraction.image}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                          e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                        }}
+                      />
+                      <div className="hidden absolute inset-0 flex items-center justify-center text-[10px] text-red-600 font-medium text-center px-1">
+                        Couldn't load
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <label className="flex items-center gap-2 text-[13px] text-navy">
