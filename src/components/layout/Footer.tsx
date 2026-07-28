@@ -23,15 +23,13 @@ const serviceLinks = [
   "Hotel Booking",
   "Cruise Booking",
   "Travel Insurance",
-  "Corporate Travel",
-  "Sightseeing Planning",
 ];
 
 const socials = [
-  { icon: FaFacebookF, href: "#" },
+  { icon: FaFacebookF, href: "https://www.facebook.com/kaluchatravels/" },
   { icon: FaInstagram, href: "https://www.instagram.com/kalucha_travels/" },
   { icon: FaYoutube, href: "#" },
-  { icon: FaLinkedinIn, href: "#" },
+  { icon: FaLinkedinIn, href: "https://www.linkedin.com/company/kalucha-travels/" },
 ];
 
 export default function Footer() {

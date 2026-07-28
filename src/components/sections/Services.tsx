@@ -47,17 +47,6 @@ const services = [
     title: "Travel Insurance",
     description: "Comprehensive travel insurance for a worry-free journey.",
   },
-  {
-    icon: FaBriefcase,
-    title: "Corporate Travel",
-    description: "End-to-end corporate travel management for businesses.",
-  },
-  {
-    icon: FaMapLocationDot,
-    title: "Sightseeing Planning",
-    description:
-      "Curated sightseeing experiences and local tours at top destinations.",
-  },
 ];
 
 export default function Services() {
@@ -74,13 +63,13 @@ export default function Services() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[14px] sm:gap-[18px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[14px] sm:gap-[18px]">
           {services.map((service) => {
             const Icon = service.icon;
             return (
               <div
                 key={service.title}
-                className="bg-white border border-line rounded-brand px-5 py-6 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(14,42,58,0.08)]"
+                className="bg-white border border-line rounded-brand px-6 py-7 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(14,42,58,0.08)]"
               >
                 <div className="w-[42px] h-[42px] rounded-[10px] bg-orange text-white flex items-center justify-center text-[19px] mb-4">
                   <Icon />
