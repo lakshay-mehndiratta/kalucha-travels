@@ -44,11 +44,17 @@ select::-ms-expand {
   display: none;
 }
 
+/* Reposition the native date-picker indicator inward from the edge on mobile
+   (Chrome/WebView renders it flush against the border by default) */
 input[type="date"] {
   padding-right: 8px; /* extra room so the icon isn't flush against the edge */
+  position: relative;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   margin-right: 6px;
   padding: 4px;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
 }
