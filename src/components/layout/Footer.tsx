@@ -9,7 +9,7 @@ import Logo from "@/components/ui/Logo";
 
 const quickLinks = [
   { href: "/", label: "Home" },
-  { href: "#about", label: "About Us" },
+  { href: "/#about", label: "About Us" },
   { href: "#services", label: "Visa Services" },
   { href: "#packages", label: "Holiday Packages" },
   { href: "#destinations", label: "Destinations" },
