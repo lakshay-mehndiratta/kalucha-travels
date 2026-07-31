@@ -74,7 +74,7 @@ export default function AdminSidebar({
             />
             {!collapsed && (
               <div className="min-w-0 lg:block">
-                <div className="font-serif font-bold text-[15px] leading-tight truncate">
+                <div className="font-serif font-bold text-[15px] leading-tight truncate whitespace-nowrap">
                   Kalucha Travels
                 </div>
                 <div className="text-[9px] tracking-[0.2em] text-[#a9b6bc]">ADMIN</div>
@@ -84,7 +84,7 @@ export default function AdminSidebar({
                 mobile drawer is open at a lg breakpoint edge case — hidden via lg:hidden below */}
             {collapsed && (
               <div className="min-w-0 lg:hidden">
-                <div className="font-serif font-bold text-[15px] leading-tight truncate">
+                <div className="font-serif font-bold text-[15px] leading-tight truncate whitespace-nowrap">
                   Kalucha Travels
                 </div>
                 <div className="text-[9px] tracking-[0.2em] text-[#a9b6bc]">ADMIN</div>
@@ -110,7 +110,7 @@ export default function AdminSidebar({
                 href={item.href}
                 onClick={onClose}
                 title={collapsed ? item.label : undefined}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors overflow-hidden ${
                   collapsed ? "lg:justify-center" : ""
                 } ${
                   active
@@ -119,7 +119,7 @@ export default function AdminSidebar({
                 }`}
               >
                 <Icon className="text-lg shrink-0" />
-                <span className={collapsed ? "lg:hidden" : ""}>{item.label}</span>
+                <span className={`whitespace-nowrap ${collapsed ? "lg:hidden" : ""}`}>{item.label}</span>
               </Link>
             );
           })}
@@ -137,12 +137,12 @@ export default function AdminSidebar({
           <button
             onClick={handleSignOut}
             title={collapsed ? "Logout" : undefined}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-[#c7d1d5] hover:bg-white/[0.06] hover:text-white transition-colors ${
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13.5px] font-medium text-[#c7d1d5] hover:bg-white/[0.06] hover:text-white transition-colors overflow-hidden ${
               collapsed ? "lg:justify-center" : ""
             }`}
           >
             <HiOutlineArrowRightOnRectangle className="text-lg shrink-0" />
-            <span className={collapsed ? "lg:hidden" : ""}>Logout</span>
+            <span className={`whitespace-nowrap ${collapsed ? "lg:hidden" : ""}`}>Logout</span>
           </button>
         </div>
       </aside>
