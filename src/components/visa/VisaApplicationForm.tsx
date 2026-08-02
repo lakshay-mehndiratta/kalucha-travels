@@ -221,7 +221,12 @@ export default function VisaApplicationForm() {
             htmlFor="passportScan"
             className="mt-1 flex items-center justify-between rounded-lg border border-line px-4 py-3 cursor-pointer hover:border-orange transition-colors"
           >
-            <span className="rounded-md bg-orange px-4 py-2 text-sm font-medium text-white">
+            <span className="inline-flex items-center px-4 py-2 text-sm font-medium
+              border border-line rounded-lg
+              bg-white text-navy
+              hover:bg-[#f8f6f2]
+              transition-colors cursor-pointer"
+            >
               Choose File
             </span>
 
@@ -250,7 +255,12 @@ export default function VisaApplicationForm() {
             htmlFor="photo"
             className="mt-1 flex items-center justify-between rounded-lg border border-line px-4 py-3 cursor-pointer hover:border-orange transition-colors"
           >
-            <span className="rounded-md bg-orange px-4 py-2 text-sm font-medium text-white">
+            <span className="inline-flex items-center px-4 py-2 text-sm font-medium
+              border border-line rounded-lg
+              bg-white text-navy
+              hover:bg-[#f8f6f2]
+              transition-colors cursor-pointer"
+            >
               Choose File
             </span>
 
@@ -279,7 +289,12 @@ export default function VisaApplicationForm() {
             htmlFor="supportingDocument"
             className="mt-1 flex items-center justify-between rounded-lg border border-line px-4 py-3 cursor-pointer hover:border-orange transition-colors"
           >
-            <span className="rounded-md bg-orange px-4 py-2 text-sm font-medium text-white">
+            <span className="inline-flex items-center px-4 py-2 text-sm font-medium
+              border border-line rounded-lg
+              bg-white text-navy
+              hover:bg-[#f8f6f2]
+              transition-colors cursor-pointer"
+            >
               Choose File
             </span>
 
@@ -312,7 +327,7 @@ export default function VisaApplicationForm() {
           placeholder="Share any additional information, special requests, previous travel history, or questions that may help us process your application."
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className={`${inputClass} bg-white min-h-[120px] resize-none`}
+          className={`${inputClass} bg-white min-h-[110px]`}
         />
       </div>
 
@@ -321,11 +336,7 @@ export default function VisaApplicationForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="inline-flex items-center px-4 py-2 text-sm font-medium
-          border border-line rounded-lg
-          bg-white text-navy
-          hover:bg-[#f8f6f2]
-          transition-colors cursor-pointer"
+        className="w-full bg-orange text-white font-semibold rounded-full py-3.5 hover:bg-orange-dark transition-colors disabled:opacity-60"
       >
         {status === "submitting" ? "Submitting..." : "Submit Application →"}
       </button>
