@@ -17,12 +17,14 @@ import {
 import logo from "@/assets/kalucha_travels_logo.png";
 
 import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { HiOutlineDocumentCheck } from "react-icons/hi2";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: HiOutlineHome },
   { href: "/admin/destinations", label: "Destination Enquiries", icon: HiOutlineMapPin },
   { href: "/admin/destinations/manage", label: "Manage Destinations", icon: HiOutlinePencilSquare },
   { href: "/admin/flights", label: "Flight Enquiries", icon: HiOutlinePaperAirplane },
+  { href: "/admin/visa-applications", label: "Visa Applications", icon: HiOutlineDocumentCheck },
   { href: "/admin/settings", label: "Settings", icon: HiOutlineCog6Tooth },
 ];
 

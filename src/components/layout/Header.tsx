@@ -37,7 +37,7 @@ export default function Header() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button href="#apply" variant="primary" size="sm">
+          <Button href="/visa-application" variant="primary" size="sm">
             Apply for Visa →
           </Button>
         </div>
@@ -67,7 +67,7 @@ export default function Header() {
             ))}
           </nav>
           <Button
-            href="#apply"
+            href="/visa-application"
             variant="primary"
             size="sm"
             className="w-full justify-center mt-3"

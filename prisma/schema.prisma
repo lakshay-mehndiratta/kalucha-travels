@@ -120,3 +120,28 @@ model FlightLeg {
   destinationCity String
   date            DateTime
 }
+
+model VisaApplication {
+  id                  String         @id @default(cuid())
+  name                String
+  email               String
+  phone               String
+  destinationCountry  String
+  visaType            String
+  travelDate          DateTime?
+  message             String?
+  documents           VisaDocument[]
+  status              EnquiryStatus  @default(NEW)
+  createdAt           DateTime       @default(now())
+}
+
+model VisaDocument {
+  id                String          @id @default(cuid())
+  visaApplicationId String
+  visaApplication   VisaApplication @relation(fields: [visaApplicationId], references: [id], onDelete: Cascade)
+  documentType      String
+  storagePath       String
+  fileName          String
+  fileSize          Int
+  createdAt         DateTime        @default(now())
+}
