@@ -46,6 +46,12 @@ export default function VisaApplicationForm() {
     setFiles((f) => ({ ...f, [key]: file }));
   };
 
+  const oneYearFromNowStr = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 1);
+    return d.toISOString().split("T")[0];
+  })();
+
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -188,6 +194,7 @@ export default function VisaApplicationForm() {
             <input
               type="date"
               min={new Date().toISOString().split("T")[0]}
+              max={oneYearFromNowStr}
               value={form.travelDate}
               onChange={(e) => setForm({ ...form, travelDate: e.target.value })}
               className={inputClass}
@@ -200,36 +207,98 @@ export default function VisaApplicationForm() {
         <h4 className="text-sm font-bold text-navy uppercase tracking-wide mb-1">
           Upload Documents
         </h4>
+
         <p className="text-[12px] text-muted -mt-2">
-          PDF, JPG, or PNG — up to 5MB each. Kept securely and deleted automatically after 60 days.
+          PDF, JPG, or PNG — up to 5MB each. Kept securely and deleted automatically
+          after 60 days.
         </p>
+
+        {/* Passport */}
         <div>
           <label className={labelClass}>Passport Scan *</label>
+
+          <label
+            htmlFor="passportScan"
+            className="mt-1 flex items-center justify-between rounded-lg border border-line px-4 py-3 cursor-pointer hover:border-orange transition-colors"
+          >
+            <span className="rounded-md bg-orange px-4 py-2 text-sm font-medium text-white">
+              Choose File
+            </span>
+
+            <span className="ml-4 flex-1 truncate text-right text-sm text-muted">
+              {files.passportScan?.name ?? "No file selected"}
+            </span>
+          </label>
+
           <input
-            required
+            id="passportScan"
             type="file"
+            required
             accept=".pdf,.jpg,.jpeg,.png"
-            onChange={(e) => handleFileChange("passportScan", e.target.files?.[0] ?? null)}
-            className={`${inputClass} py-2`}
+            onChange={(e) =>
+              handleFileChange("passportScan", e.target.files?.[0] ?? null)
+            }
+            className="hidden"
           />
         </div>
+
+        {/* Photo */}
         <div>
           <label className={labelClass}>Passport-size Photo *</label>
+
+          <label
+            htmlFor="photo"
+            className="mt-1 flex items-center justify-between rounded-lg border border-line px-4 py-3 cursor-pointer hover:border-orange transition-colors"
+          >
+            <span className="rounded-md bg-orange px-4 py-2 text-sm font-medium text-white">
+              Choose File
+            </span>
+
+            <span className="ml-4 flex-1 truncate text-right text-sm text-muted">
+              {files.photo?.name ?? "No file selected"}
+            </span>
+          </label>
+
           <input
-            required
+            id="photo"
             type="file"
+            required
             accept=".pdf,.jpg,.jpeg,.png"
-            onChange={(e) => handleFileChange("photo", e.target.files?.[0] ?? null)}
-            className={`${inputClass} py-2`}
+            onChange={(e) =>
+              handleFileChange("photo", e.target.files?.[0] ?? null)
+            }
+            className="hidden"
           />
         </div>
+
+        {/* Supporting Document */}
         <div>
           <label className={labelClass}>Supporting Document (optional)</label>
+
+          <label
+            htmlFor="supportingDocument"
+            className="mt-1 flex items-center justify-between rounded-lg border border-line px-4 py-3 cursor-pointer hover:border-orange transition-colors"
+          >
+            <span className="rounded-md bg-orange px-4 py-2 text-sm font-medium text-white">
+              Choose File
+            </span>
+
+            <span className="ml-4 flex-1 truncate text-right text-sm text-muted">
+              {files.supportingDocument?.name ?? "No file selected"}
+            </span>
+          </label>
+
           <input
+            id="supportingDocument"
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
-            onChange={(e) => handleFileChange("supportingDocument", e.target.files?.[0] ?? null)}
-            className={`${inputClass} py-2`}
+            onChange={(e) =>
+              handleFileChange(
+                "supportingDocument",
+                e.target.files?.[0] ?? null
+              )
+            }
+            className="hidden"
           />
         </div>
       </div>
@@ -240,6 +309,7 @@ export default function VisaApplicationForm() {
         </label>
         <textarea
           id="message"
+          placeholder="Share any additional information, travel history, special requirements, or questions that may help us process your visa application."
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
           className={`${inputClass} min-h-[70px]`}

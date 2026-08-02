@@ -40,7 +40,7 @@ export default async function DestinationPage({
           src={destination.heroImage}
           alt={destination.name}
           fill
-          priority
+          preload
           sizes="100vw"
           className="object-cover -z-20"
         />

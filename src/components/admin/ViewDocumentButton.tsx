@@ -24,11 +24,11 @@ export default function ViewDocumentButton({
 
   return (
     <button
-  onClick={handleView}
-  disabled={loading}
-  className="w-fit text-left text-[12px] font-semibold text-orange-dark hover:underline disabled:opacity-50"
->
-  {loading ? "Loading..." : label}
-</button>
+      onClick={handleView}
+      disabled={loading}
+      className="w-fit text-left text-[12px] font-semibold text-orange-dark hover:underline disabled:opacity-50"
+    >
+      {loading ? "Loading..." : label}
+    </button>
   );
 }
