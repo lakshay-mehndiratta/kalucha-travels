@@ -204,7 +204,7 @@ export default function VisaApplicationForm() {
       </div>
 
       <div className="bg-white border border-line rounded-brand p-5 space-y-3.5">
-        <h4 className="text-sm font-bold text-navy uppercase tracking-wide mb-1">
+        <h4 className="text-sm font-bold text-navy uppercase tracking-wide mb-3">
           Upload Documents
         </h4>
 
@@ -327,7 +327,7 @@ export default function VisaApplicationForm() {
           placeholder="Share any additional information, special requests, previous travel history, or questions that may help us process your application."
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className={`${inputClass} bg-white min-h-[110px]`}
+          className={`${inputClass} bg-white min-h-[90px]`}
         />
       </div>
 
