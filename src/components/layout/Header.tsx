@@ -8,7 +8,7 @@ import { HiMenu, HiX } from "react-icons/hi";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "#about", label: "About Us" },
+  { href: "/#about", label: "About Us" },
   { href: "#services", label: "Visa Services" },
   { href: "/flights", label: "Flights" },
   { href: "#packages", label: "Holiday Packages" },

@@ -12,7 +12,7 @@ const quickLinks = [
   { href: "/#about", label: "About Us" },
   { href: "#services", label: "Visa Services" },
   { href: "#packages", label: "Holiday Packages" },
-  { href: "#destinations", label: "Destinations" },
+  { href: "/#destinations", label: "Destinations" },
   { href: "#contact", label: "Contact Us" },
 ];
 

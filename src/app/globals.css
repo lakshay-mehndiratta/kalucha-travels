@@ -58,3 +58,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   right: 10px;
   cursor: pointer;
 }
+
+input[type="date"]:invalid {
+  border-color: #dc2626;
+}

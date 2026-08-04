@@ -25,7 +25,7 @@ export default function CTABanner() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-3.5 w-full lg:w-auto">
-          <Button href="#" variant="primary" className="justify-center">
+          <Button href="/visa-application" variant="primary" className="justify-center">
             Apply for Visa →
           </Button>
           <Button href="tel:+919216044112" variant="outline-light" className="justify-center">
