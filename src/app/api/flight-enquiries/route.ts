@@ -26,7 +26,7 @@ const flightEnquirySchema = z
       .multipleOf(1000, "Budget must be in increments of ₹1,000")
       .optional(),
     name: z.string().min(2),
-    email: z.string().email(),
+    email: z.email(),
     phone: z
       .string()
       .regex(/^\+\d{1,4} \d{10}$/, "Phone number must be a valid 10-digit number"),
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     const firstIssue = parsed.error.issues[0];
     return NextResponse.json(
-      { error: firstIssue.message, issues: parsed.error.flatten() },
+      { error: firstIssue.message, issues: z.flattenError(parsed.error) },
       { status: 400 }
     );
   }

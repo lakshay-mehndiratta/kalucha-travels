@@ -11,7 +11,7 @@ const attractionSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().int().min(0),
-  image: z.string().url(),
+  image: z.url(),
   includedByDefault: z.boolean(),
 });
 
@@ -19,7 +19,7 @@ const createSchema = z.object({
   name: z.string().min(1),
   slug: z.string().regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
   country: z.string().min(1),
-  heroImage: z.string().url(),
+  heroImage: z.url(),
   shortDescription: z.string().min(1),
   package: z.object({
     name: z.string().min(1),
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.issues[0].message, issues: parsed.error.flatten() },
+      { error: parsed.error.issues[0].message, issues: z.flattenError(parsed.error) },
       { status: 400 }
     );
   }

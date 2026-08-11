@@ -8,7 +8,7 @@ const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 const fieldsSchema = z.object({
   name: z.string().min(2),
-  email: z.string().email(),
+  email: z.email(),
   phone: z.string().regex(/^\+\d{1,4} \d{10}$/, "Phone number must be a valid 10-digit number"),
   destinationCountry: z.string().min(1),
   visaType: z.string().min(1),

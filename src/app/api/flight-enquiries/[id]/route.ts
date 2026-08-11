@@ -15,7 +15,7 @@ export async function PATCH(
   const parsed = statusSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json({ error: z.flattenError(parsed.error) }, { status: 400 });
   }
 
   const enquiry = await prisma.flightEnquiry.update({
