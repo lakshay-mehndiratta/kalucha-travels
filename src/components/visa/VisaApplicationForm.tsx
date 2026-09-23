@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import type { SubmitEvent } from "react";
-
-const countryCodes = [
-  { code: "+91", label: "🇮🇳 +91" },
-  { code: "+1", label: "🇺🇸 +1" },
-  { code: "+44", label: "🇬🇧 +44" },
-  { code: "+971", label: "🇦🇪 +971" },
-  { code: "+65", label: "🇸🇬 +65" },
-  { code: "+61", label: "🇦🇺 +61" },
-];
+import PhoneInput from "@/components/ui/PhoneInput";
 
 const visaTypes = ["Tourist", "Student", "Work", "Business", "Transit"];
 
@@ -131,32 +123,16 @@ export default function VisaApplicationForm() {
           />
         </div>
         <div>
-          <label className={labelClass}>Phone Number</label>
-          <div className="flex gap-2">
-            <select
-              value={form.countryCode}
-              onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
-              className="border border-line rounded-lg px-2 py-2.5 text-sm bg-white shrink-0"
-            >
-              {countryCodes.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-            <input
-              required
-              type="tel"
-              inputMode="numeric"
-              maxLength={10}
-              placeholder="10-digit mobile number"
-              value={form.phone}
-              onChange={(e) =>
-                setForm({ ...form, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })
-              }
-              className={inputClass}
-            />
-          </div>
+          <label className={labelClass} htmlFor="phone">
+            Phone Number
+          </label>
+          <PhoneInput
+            id="phone"
+            dialCode={form.countryCode}
+            onDialCodeChange={(dial) => setForm({ ...form, countryCode: dial })}
+            number={form.phone}
+            onNumberChange={(digits) => setForm({ ...form, phone: digits })}
+          />
         </div>
       </div>
 

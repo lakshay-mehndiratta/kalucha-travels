@@ -6,17 +6,9 @@ import { FaChevronDown } from "react-icons/fa6";
 import AirportSelect, { Airport } from "./AirportSelect";
 import TripTypeTabs, { TripType } from "./TripTypeTabs";
 import TravelersClassPicker, { Travelers, TravelClass } from "./TravelersClassPicker";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 type Leg = { origin: Airport | null; destination: Airport | null; date: string };
-
-const countryCodes = [
-  { code: "+91", label: "🇮🇳 +91" },
-  { code: "+1", label: "🇺🇸 +1" },
-  { code: "+44", label: "🇬🇧 +44" },
-  { code: "+971", label: "🇦🇪 +971" },
-  { code: "+65", label: "🇸🇬 +65" },
-  { code: "+61", label: "🇦🇺 +61" },
-];
 
 const todayStr = () => new Date().toISOString().split("T")[0];
 
@@ -417,38 +409,16 @@ export default function FlightBookingForm() {
             />
           </div>
           <div>
-            <label className={labelClass}>Phone Number</label>
-            <div className="flex gap-2">
-              <div className="relative shrink-0">
-                <select
-                  value={contact.countryCode} // or form.countryCode in EnquiryForm
-                  onChange={(e) => setContact({ ...contact, countryCode: e.target.value })}
-                  className="w-full border border-line rounded-lg pl-2.5 pr-7 py-2.5 text-sm bg-white cursor-pointer"
-                >
-                  {countryCodes.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-                <FaChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted pointer-events-none" />
-              </div>
-              <input
-                required
-                type="tel"
-                inputMode="numeric"
-                maxLength={10}
-                placeholder="10-digit mobile number"
-                value={contact.phone}
-                onChange={(e) =>
-                  setContact({
-                    ...contact,
-                    phone: e.target.value.replace(/\D/g, "").slice(0, 10),
-                  })
-                }
-                className={inputClass}
-              />
-            </div>
+            <label className={labelClass} htmlFor="phone">
+              Phone Number
+            </label>
+            <PhoneInput
+              id="phone"
+              dialCode={contact.countryCode}
+              onDialCodeChange={(dial) => setContact({ ...contact, countryCode: dial })}
+              number={contact.phone}
+              onNumberChange={(digits) => setContact({ ...contact, phone: digits })}
+            />
           </div>
         </div>
       </div>
