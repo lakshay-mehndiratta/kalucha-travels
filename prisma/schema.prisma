@@ -30,6 +30,9 @@ model Package {
   attractions      Attraction[]
   enquiries        Enquiry[]
   createdAt        DateTime     @default(now())
+  slug             String
+  @@unique([destinationId, slug])
+  image            String?
 }
 
 model ItineraryDay {

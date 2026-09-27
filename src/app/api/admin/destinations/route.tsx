@@ -29,6 +29,8 @@ const createSchema = z.object({
     includedServices: z.array(z.string().min(1)).min(1),
     itinerary: z.array(itineraryDaySchema).min(1),
     attractions: z.array(attractionSchema).min(1),
+    slug: z.string().regex(/^[a-z0-9-]+$/, "Package slug must be lowercase letters, numbers, and hyphens only"),
+    image: z.url().optional(),
   }),
 });
 
@@ -66,6 +68,8 @@ export async function POST(req: Request) {
             create: pkg.itinerary.map((day, i) => ({ ...day, dayNumber: i + 1 })),
           },
           attractions: { create: pkg.attractions },
+          slug: pkg.slug,
+          image: pkg.image,
         },
       },
     },

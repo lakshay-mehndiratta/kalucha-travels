@@ -9,11 +9,11 @@ import { HiMenu, HiX } from "react-icons/hi";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/#about", label: "About Us" },
-  { href: "#services", label: "Visa Services" },
+  { href: "/#services", label: "Visa Services" },
   { href: "/flights", label: "Flights" },
   { href: "#packages", label: "Holiday Packages" },
-  { href: "#destinations", label: "Destinations" },
-  { href: "#contact", label: "Contact Us" },
+  { href: "/#destinations", label: "Destinations" },
+  { href: "/#contact", label: "Contact Us" },
 ];
 
 export default function Header() {

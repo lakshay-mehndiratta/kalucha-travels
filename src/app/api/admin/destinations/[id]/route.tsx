@@ -30,6 +30,8 @@ const updateSchema = z.object({
     includedServices: z.array(z.string().min(1)).min(1),
     itinerary: z.array(itineraryDaySchema).min(1),
     attractions: z.array(attractionSchema).min(1),
+    slug: z.string().regex(/^[a-z0-9-]+$/, "Package slug must be lowercase letters, numbers, and hyphens only"),
+    image: z.url().optional(),
   }),
 });
 
@@ -62,6 +64,16 @@ export async function PATCH(
     return NextResponse.json({ error: "No package found for this destination." }, { status: 400 });
   }
 
+  const conflictingPackageSlug = await prisma.package.findFirst({
+    where: { destinationId: id, slug: pkg.slug, NOT: { id: existingPackage.id } },
+  });
+  if (conflictingPackageSlug) {
+    return NextResponse.json(
+      { error: "This package slug is already in use for this destination." },
+      { status: 400 }
+    );
+  }
+
   await prisma.$transaction(async (tx) => {
     await tx.destination.update({ where: { id }, data: destinationData });
 
@@ -73,6 +85,8 @@ export async function PATCH(
         durationNights: pkg.durationNights,
         basePrice: pkg.basePrice,
         includedServices: pkg.includedServices,
+        slug: pkg.slug,
+        image: pkg.image,
       },
     });
 

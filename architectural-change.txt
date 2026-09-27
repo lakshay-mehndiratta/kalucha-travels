@@ -1,0 +1,363 @@
+I need you to fix an architectural issue in my Kalucha Travels admin destination/package system. 
+ 
+IMPORTANT: Do not redesign unrelated parts of the application. Preserve the existing UI, styling, sidebar, database structure, validation, and working functionality unless a change is genuinely required for this architecture. 
+ 
+CURRENT ARCHITECTURE 
+ 
+My Prisma schema has a Destination → Package relationship. 
+ 
+A Destination can have multiple Packages. 
+ 
+For example: 
+ 
+Destination: 
+- Singapore 
+  - Singapore Getaway 
+  - Singapore Explorer 
+- Dubai 
+  - Dubai Getaway 
+ 
+The Package model uses: 
+ 
+@@unique([destinationId, slug]) 
+ 
+So package slugs only need to be unique within their destination. 
+ 
+THE CURRENT PROBLEM 
+ 
+The current DestinationForm is designed as: 
+ 
+"Create Destination + its first Package" 
+ 
+This works when creating a completely new destination. 
+ 
+However, I now need to support adding additional packages to an EXISTING destination. 
+ 
+For example, Singapore already exists: 
+ 
+Destination: 
+  name = Singapore 
+  slug = singapore 
+ 
+Package: 
+  name = Singapore Getaway 
+  slug = singapore-getaway 
+ 
+I want to add: 
+ 
+Package: 
+  name = Singapore Explorer 
+  slug = singapore-explorer 
+ 
+WITHOUT creating another Destination. 
+ 
+Currently, if I use the existing DestinationForm and enter: 
+ 
+Destination Name: Singapore 
+Destination Slug: singapore 
+Package Name: Singapore Explorer 
+Package Slug: singapore-explorer 
+ 
+the API attempts to create another Destination with slug "singapore", causing: 
+ 
+"slug is already in use" 
+ 
+If I change the destination slug, it creates a completely new destination, which is also incorrect. 
+ 
+WHAT I WANT 
+ 
+Separate the concepts of: 
+ 
+1. Creating a new Destination with its first Package 
+2. Adding another Package to an existing Destination 
+ 
+DO NOT solve this by changing the destination slug. 
+ 
+The existing Singapore destination must remain: 
+ 
+Destination: 
+  slug = singapore 
+ 
+and the new package must simply reference its existing destinationId. 
+ 
+DESIRED ADMIN FLOW 
+ 
+Keep the existing flow for creating a new destination: 
+ 
+/admin/destinations/manage/new 
+ 
+This should continue to create: 
+ 
+Destination 
+  + 
+first Package 
+ 
+Then add a separate "Add Package" action for an existing destination. 
+ 
+For example, on the Manage Destinations page: 
+ 
+Singapore 
+Packages: 1 
+[Edit] [Add Package] 
+ 
+Clicking "Add Package" should navigate to something like: 
+ 
+/admin/destinations/manage/[destinationId]/packages/new 
+ 
+The exact route can be adapted to my existing routing conventions, but it must use the existing destination ID. 
+ 
+The Add Package form should contain ONLY package-related fields: 
+ 
+- Package Name 
+- Package Slug 
+- Days 
+- Nights 
+- Base Price 
+- Included Services 
+- Itinerary 
+- Attractions 
+ 
+It should NOT ask for: 
+ 
+- Destination Name 
+- Destination Slug 
+- Country 
+- Hero Image 
+- Short Description 
+ 
+because the destination already exists. 
+ 
+The backend should then create ONLY a Package with the existing destinationId. 
+ 
+Conceptually: 
+ 
+const destination = await prisma.destination.findUnique({ 
+  where: { id: destinationId }, 
+}); 
+ 
+if (!destination) { 
+  return error("Destination not found"); 
+} 
+ 
+await prisma.package.create({ 
+  data: { 
+    destinationId, 
+    name, 
+    slug, 
+    ... 
+  }, 
+}); 
+ 
+Do not create another Destination. 
+ 
+CURRENT DestinationForm 
+ 
+The current form contains: 
+ 
+const pkg = destination?.packages[0]; 
+ 
+and handles destination + package fields together. 
+ 
+This is acceptable for the "Create Destination + first Package" flow, but it should not be reused for adding another package in a way that attempts to create a Destination. 
+ 
+You can either: 
+- extract/reuse package form components, or 
+- create a separate PackageForm 
+ 
+Choose the cleanest approach that minimizes duplication and preserves the current UI. 
+ 
+DATABASE REQUIREMENT 
+ 
+Do not remove or weaken: 
+ 
+Destination.slug uniqueness. 
+ 
+Do not change: 
+ 
+@@unique([destinationId, slug]) 
+ 
+because that is exactly what we need. 
+ 
+These should be valid: 
+ 
+Singapore + singapore-getaway 
+Singapore + singapore-explorer 
+ 
+while these should not be valid: 
+ 
+Singapore + singapore-explorer 
+Singapore + singapore-explorer 
+ 
+The destination slug "singapore" should remain unique at the Destination level. 
+ 
+CUSTOMER-FACING ROUTING REQUIREMENT 
+ 
+This architecture is being introduced because I also need this behavior on the public website: 
+ 
+CASE 1 — destination has exactly ONE package 
+ 
+Example: 
+ 
+Dubai 
+  └── Dubai Getaway 
+ 
+Clicking Dubai from either: 
+- homepage 
+- All Destinations page 
+ 
+should take the user directly to: 
+ 
+/destinations/dubai/dubai-getaway 
+ 
+CASE 2 — destination has MORE THAN ONE package 
+ 
+Example: 
+ 
+Singapore 
+  ├── Singapore Getaway 
+  └── Singapore Explorer 
+ 
+Clicking Singapore from either: 
+- homepage 
+- All Destinations page 
+ 
+should take the user to: 
+ 
+/destinations/singapore/packages 
+ 
+That page should display all Singapore packages. 
+ 
+Clicking "Singapore Explorer" should then take the user to: 
+ 
+/destinations/singapore/singapore-explorer 
+ 
+The existing single-package behavior and existing destination pages should continue working. 
+ 
+IMPORTANT IMPLEMENTATION REQUIREMENTS 
+ 
+1. First inspect the existing codebase before modifying anything. 
+ 
+2. Identify: 
+   - current DestinationForm 
+   - Manage Destinations page 
+   - destination creation API 
+   - destination update API 
+   - Prisma Destination and Package models 
+   - existing public destination routes/pages 
+   - current homepage destination cards 
+   - current All Destinations page/cards, if present 
+ 
+3. Do not assume filenames/routes. Inspect the project. 
+ 
+4. Do not duplicate the entire DestinationForm unnecessarily. 
+ 
+5. Preserve the current styling and visual design. 
+ 
+6. Preserve the existing admin sidebar. 
+ 
+7. Preserve existing destination creation and editing behavior. 
+ 
+8. Existing destinations such as Singapore and Dubai must not be duplicated. 
+ 
+9. Adding a package must use the existing destinationId. 
+ 
+10. Validate package slug using the existing slug conventions. 
+ 
+11. Handle duplicate package slugs gracefully with a useful error. 
+ 
+12. Make sure the package creation API cannot accidentally create a Destination. 
+ 
+13. Do not modify existing database data just to make the architecture work. 
+ 
+14. Do not create another migration unless the existing Prisma schema actually requires a schema change. The database already supports multiple packages per destination. 
+ 
+15. Do not remove the Package slug field or the composite unique constraint. 
+ 
+16. Make the solution production-safe and consistent with the existing Next.js App Router architecture. 
+ 
+IMPORTANT ABOUT THE MIGRATION ERROR WE RECENTLY HAD 
+ 
+We previously added Package.slug and the composite unique constraint. 
+ 
+The migration SQL is: 
+ 
+UPDATE "Package" 
+SET "slug" = lower(regexp_replace(regexp_replace(trim("name"), '[^a-zA-Z0-9]+', '-', 'g'), '(^-|-$)', '', 'g')) 
+WHERE "slug" IS NULL; 
+ 
+ALTER TABLE "Package" ALTER COLUMN "slug" SET NOT NULL; 
+ 
+CREATE UNIQUE INDEX "Package_destinationId_slug_key" 
+ON "Package"("destinationId", "slug"); 
+ 
+This migration has already been created/applied successfully. 
+ 
+Do NOT unnecessarily recreate or modify this migration. 
+ 
+The temporary backfill script was only for populating missing package slugs and is no longer relevant to the application architecture. 
+ 
+EXPECTED ADMIN RESULT 
+ 
+After your changes I should be able to do: 
+ 
+Manage Destinations 
+→ Singapore 
+→ Add Package 
+ 
+and create: 
+ 
+Singapore 
+  ├── Singapore Getaway 
+  └── Singapore Explorer 
+ 
+without creating a second Singapore destination. 
+ 
+EXPECTED PUBLIC RESULT 
+ 
+Homepage: 
+Singapore card 
+    ↓ 
+2 packages 
+    ↓ 
+/destinations/singapore/packages 
+ 
+Packages page: 
+    Singapore Getaway 
+    Singapore Explorer 
+ 
+Click Singapore Explorer: 
+    ↓ 
+/destinations/singapore/singapore-explorer 
+ 
+Dubai with one package: 
+Dubai card 
+    ↓ 
+/destinations/dubai/dubai-getaway 
+ 
+BEFORE CODING 
+ 
+Explain briefly: 
+- what files you found 
+- where the architectural problem currently exists 
+- what files you intend to modify 
+- how the new create-package flow will work 
+ 
+Then implement the changes. 
+ 
+AFTER CODING 
+ 
+Give me: 
+1. A concise summary of changes. 
+2. The exact files changed. 
+3. Any new routes/API endpoints created. 
+4. Any database/migration changes (preferably none if the current schema already supports this). 
+5. Exact commands I should run to test it. 
+6. A short manual test checklist covering: 
+   - creating a new destination 
+   - adding a second package to Singapore 
+   - verifying only one Singapore Destination exists 
+   - verifying Singapore has two Packages 
+   - testing the single-package Dubai route 
+   - testing the multi-package Singapore route  
+ 
+Do not stop after identifying the issue. Implement the complete fix.

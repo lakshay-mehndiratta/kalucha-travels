@@ -58,7 +58,7 @@ export default async function Destinations() {
               <span className="text-orange">Kalucha</span>
             </h2>
           </div>
-          <Button href="#" variant="outline-dark" className="text-sm">
+          <Button href="/destinations" variant="outline-dark" className="text-sm">
             View All Destinations →
           </Button>
         </div>

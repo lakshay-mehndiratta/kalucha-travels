@@ -34,6 +34,7 @@ async function main() {
     data: {
       destinationId: dubai.id,
       name: "Dubai Getaway",
+      slug: "dubai-getaway",
       durationDays: 5,
       durationNights: 4,
       basePrice: 45000,
