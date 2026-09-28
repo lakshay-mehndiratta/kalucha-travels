@@ -2,37 +2,15 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
-const itineraryDaySchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-});
-
-const attractionSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1),
-  description: z.string().min(1),
-  price: z.number().int().min(0),
-  image: z.url(),
-  includedByDefault: z.boolean(),
-});
-
 const updateSchema = z.object({
   name: z.string().min(1),
-  slug: z.string().regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
+  slug: z.string().regex(
+    /^[a-z0-9-]+$/,
+    "Slug must be lowercase letters, numbers, and hyphens only"
+  ),
   country: z.string().min(1),
   heroImage: z.url(),
   shortDescription: z.string().min(1),
-  package: z.object({
-    name: z.string().min(1),
-    durationDays: z.number().int().min(1),
-    durationNights: z.number().int().min(0),
-    basePrice: z.number().int().min(0),
-    includedServices: z.array(z.string().min(1)).min(1),
-    itinerary: z.array(itineraryDaySchema).min(1),
-    attractions: z.array(attractionSchema).min(1),
-    slug: z.string().regex(/^[a-z0-9-]+$/, "Package slug must be lowercase letters, numbers, and hyphens only"),
-    image: z.url().optional(),
-  }),
 });
 
 export async function PATCH(
@@ -40,98 +18,37 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+
   const body = await req.json();
   const parsed = updateSchema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.issues[0].message, issues: z.flattenError(parsed.error) },
+      {
+        error: parsed.error.issues[0].message,
+        issues: z.flattenError(parsed.error),
+      },
       { status: 400 }
     );
   }
 
   const conflictingSlug = await prisma.destination.findFirst({
-    where: { slug: parsed.data.slug, NOT: { id } },
+    where: {
+      slug: parsed.data.slug,
+      NOT: { id },
+    },
   });
+
   if (conflictingSlug) {
-    return NextResponse.json({ error: "This slug is already in use." }, { status: 400 });
-  }
-
-  const { package: pkg, ...destinationData } = parsed.data;
-
-  const existingPackage = await prisma.package.findFirst({ where: { destinationId: id } });
-  if (!existingPackage) {
-    return NextResponse.json({ error: "No package found for this destination." }, { status: 400 });
-  }
-
-  const conflictingPackageSlug = await prisma.package.findFirst({
-    where: { destinationId: id, slug: pkg.slug, NOT: { id: existingPackage.id } },
-  });
-  if (conflictingPackageSlug) {
     return NextResponse.json(
-      { error: "This package slug is already in use for this destination." },
+      { error: "This slug is already in use." },
       { status: 400 }
     );
   }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.destination.update({ where: { id }, data: destinationData });
-
-    await tx.package.update({
-      where: { id: existingPackage.id },
-      data: {
-        name: pkg.name,
-        durationDays: pkg.durationDays,
-        durationNights: pkg.durationNights,
-        basePrice: pkg.basePrice,
-        includedServices: pkg.includedServices,
-        slug: pkg.slug,
-        image: pkg.image,
-      },
-    });
-
-    // Itinerary: safe to fully replace, nothing else references these IDs
-    await tx.itineraryDay.deleteMany({ where: { packageId: existingPackage.id } });
-    await tx.itineraryDay.createMany({
-      data: pkg.itinerary.map((day, i) => ({
-        ...day,
-        dayNumber: i + 1,
-        packageId: existingPackage.id,
-      })),
-    });
-
-    // Attractions: update existing by id, create new, delete removed —
-    // preserves IDs so old enquiries' selectedAttractionIds keep resolving
-    const existingAttractions = await tx.attraction.findMany({
-      where: { packageId: existingPackage.id },
-    });
-    const submittedIds = pkg.attractions.filter((a) => a.id).map((a) => a.id!);
-
-    const toDelete = existingAttractions.filter((a) => !submittedIds.includes(a.id));
-    if (toDelete.length > 0) {
-      await tx.attraction.deleteMany({
-        where: { id: { in: toDelete.map((a) => a.id) } },
-      });
-    }
-
-    for (const attraction of pkg.attractions) {
-      if (attraction.id) {
-        await tx.attraction.update({
-          where: { id: attraction.id },
-          data: {
-            name: attraction.name,
-            description: attraction.description,
-            price: attraction.price,
-            image: attraction.image,
-            includedByDefault: attraction.includedByDefault,
-          },
-        });
-      } else {
-        await tx.attraction.create({
-          data: { ...attraction, packageId: existingPackage.id },
-        });
-      }
-    }
+  await prisma.destination.update({
+    where: { id },
+    data: parsed.data,
   });
 
   return NextResponse.json({ success: true });

@@ -15,25 +15,13 @@ type Attraction = {
 
 type ItineraryRow = { title: string; description: string };
 
-type DestinationWithPackage = {
+type Destination = {
   id: string;
   name: string;
   slug: string;
   country: string;
   heroImage: string;
   shortDescription: string;
-  packages: {
-    id: string;
-    name: string;
-    slug: string;
-    image: string | null;
-    durationDays: number;
-    durationNights: number;
-    basePrice: number;
-    includedServices: string[];
-    itinerary: { title: string; description: string }[];
-    attractions: Attraction[];
-  }[];
 };
 
 const slugify = (text: string) =>
@@ -48,10 +36,9 @@ export default function DestinationForm({
   destination,
 }: {
   mode: "create" | "edit";
-  destination?: DestinationWithPackage;
+  destination?: Destination;
 }) {
   const router = useRouter();
-  const pkg = destination?.packages[0];
 
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
   const [packageSlugTouched, setPackageSlugTouched] = useState(mode === "edit");
@@ -62,38 +49,33 @@ export default function DestinationForm({
     country: destination?.country ?? "",
     heroImage: destination?.heroImage ?? "",
     shortDescription: destination?.shortDescription ?? "",
-    packageName: pkg?.name ?? "",
-    packageSlug: pkg?.slug ?? "",
-    packageImage: pkg?.image ?? "",
-    durationDays: pkg?.durationDays ?? 5,
-    durationNights: pkg?.durationNights ?? 4,
-    basePrice: pkg?.basePrice ?? 0,
+
+    // Used only when creating a new destination.
+    packageName: "",
+    packageSlug: "",
+    packageImage: "",
+    durationDays: 5,
+    durationNights: 4,
+    basePrice: 0,
   });
 
-  const [includedServices, setIncludedServices] = useState<string[]>(
-    pkg?.includedServices ?? []
-  );
+  const [includedServices, setIncludedServices] = useState<string[]>([]);
 
   const [serviceInput, setServiceInput] = useState("");
 
-  const [itinerary, setItinerary] = useState<ItineraryRow[]>(
-    pkg?.itinerary.map((d) => ({
-      title: d.title,
-      description: d.description,
-    })) ?? [{ title: "", description: "" }]
-  );
+  const [itinerary, setItinerary] = useState<ItineraryRow[]>([
+    { title: "", description: "" },
+  ]);
 
-  const [attractions, setAttractions] = useState<Attraction[]>(
-    pkg?.attractions ?? [
-      {
-        name: "",
-        description: "",
-        price: 0,
-        image: "",
-        includedByDefault: true,
-      },
-    ]
-  );
+  const [attractions, setAttractions] = useState<Attraction[]>([
+    {
+      name: "",
+      description: "",
+      price: 0,
+      image: "",
+      includedByDefault: true,
+    },
+  ]);
 
   const [error, setError] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting">("idle");
@@ -179,37 +161,52 @@ export default function DestinationForm({
     e.preventDefault();
     setError("");
 
-    if (includedServices.length === 0)
-      return setError("Add at least one included service.");
+    // Package validation is required only when creating
+    // a new destination because creation still creates
+    // the initial package.
+    if (mode === "create") {
+      if (includedServices.length === 0) {
+        return setError("Add at least one included service.");
+      }
 
-    if (itinerary.some((d) => !d.title || !d.description))
-      return setError(
-        "Every itinerary day needs a title and description."
-      );
+      if (itinerary.some((d) => !d.title || !d.description)) {
+        return setError(
+          "Every itinerary day needs a title and description."
+        );
+      }
 
-    if (attractions.some((a) => !a.name || !a.description || !a.image))
-      return setError(
-        "Every attraction needs a name, description, and image URL."
-      );
+      if (attractions.some((a) => !a.name || !a.description || !a.image)) {
+        return setError(
+          "Every attraction needs a name, description, and image URL."
+        );
+      }
+    }
 
-    const payload = {
+    const destinationData = {
       name: form.name,
       slug: form.slug,
       country: form.country,
       heroImage: form.heroImage,
       shortDescription: form.shortDescription,
-      package: {
-        name: form.packageName,
-        slug: form.packageSlug,
-        image: form.packageImage || undefined,
-        durationDays: Number(form.durationDays),
-        durationNights: Number(form.durationNights),
-        basePrice: Number(form.basePrice),
-        includedServices,
-        itinerary,
-        attractions,
-      },
     };
+
+    const payload =
+      mode === "create"
+        ? {
+            ...destinationData,
+            package: {
+              name: form.packageName,
+              slug: form.packageSlug,
+              image: form.packageImage || undefined,
+              durationDays: Number(form.durationDays),
+              durationNights: Number(form.durationNights),
+              basePrice: Number(form.basePrice),
+              includedServices,
+              itinerary,
+              attractions,
+            },
+          }
+        : destinationData;
 
     setStatus("submitting");
 
@@ -227,9 +224,11 @@ export default function DestinationForm({
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
+
         setError(
           data?.error ?? "Something went wrong. Please try again."
         );
+
         setStatus("idle");
         return;
       }
@@ -240,6 +239,7 @@ export default function DestinationForm({
       setError(
         "Network error. Please check your connection and try again."
       );
+
       setStatus("idle");
     }
   };
@@ -334,383 +334,387 @@ export default function DestinationForm({
           />
         </div>
       </div>
+      
+      {mode === "create" && (
+        <>
+          <div className="bg-white border border-line rounded-brand p-5 space-y-3.5">
+            <h3 className="text-sm font-bold text-navy uppercase tracking-wide mb-1">
+              Package Details
+            </h3>
 
-      <div className="bg-white border border-line rounded-brand p-5 space-y-3.5">
-        <h3 className="text-sm font-bold text-navy uppercase tracking-wide mb-1">
-          Package Details
-        </h3>
-
-        <div>
-          <label className={labelClass}>Package Name</label>
-          <input
-            required
-            value={form.packageName}
-            onChange={(e) =>
-              handlePackageNameChange(e.target.value)
-            }
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>Package Slug</label>
-          <input
-            required
-            value={form.packageSlug}
-            onChange={(e) => {
-              setPackageSlugTouched(true);
-              setForm({
-                ...form,
-                packageSlug: slugify(e.target.value),
-              });
-            }}
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>Package Image URL (optional)</label>
-          <input
-            type="url"
-            placeholder="https://... — leave blank to use the destination's hero image"
-            value={form.packageImage}
-            onChange={(e) => setForm({ ...form, packageImage: e.target.value })}
-            className={inputClass}
-          />
-        </div>
-
-        <div className="grid grid-cols-3 gap-3.5">
-          <div>
-            <label className={labelClass}>Days</label>
-            <input
-              required
-              type="number"
-              min={1}
-              value={form.durationDays}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  durationDays: Number(e.target.value),
-                })
-              }
-              className={inputClass}
-            />
-          </div>
-
-          <div>
-            <label className={labelClass}>Nights</label>
-            <input
-              required
-              type="number"
-              min={0}
-              value={form.durationNights}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  durationNights: Number(e.target.value),
-                })
-              }
-              className={inputClass}
-            />
-          </div>
-
-          <div>
-            <label className={labelClass}>Base Price (₹)</label>
-            <input
-              required
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={1e8}
-              step={100}
-              placeholder="e.g. 45000"
-              value={form.basePrice === 0 ? "" : form.basePrice}
-              onChange={(e) => {
-                const raw = e.target.value.replace(/^0+(?=\d)/, "");
-
-                if (raw === "") {
-                  setForm({ ...form, basePrice: 0 });
-                  return;
-                }
-
-                const num = Math.min(Number(raw), 1e8);
-
-                setForm({
-                  ...form,
-                  basePrice: num,
-                });
-              }}
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className={labelClass}>Included Services</label>
-
-          <div className="flex gap-2 mb-2">
-            <input
-              value={serviceInput}
-              onChange={(e) => setServiceInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addService();
-                }
-              }}
-              placeholder="e.g. Return Flights"
-              className={inputClass}
-            />
-
-            <button
-              type="button"
-              onClick={addService}
-              className="shrink-0 bg-navy text-white text-sm font-semibold px-4 rounded-lg"
-            >
-              Add
-            </button>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {includedServices.map((s, i) => (
-              <span
-                key={i}
-                className="bg-[#fdece2] text-orange-dark text-[13px] font-medium pl-3.5 pr-2 py-1.5 rounded-full flex items-center gap-1.5"
-              >
-                {s}
-
-                <button
-                  type="button"
-                  onClick={() => removeService(i)}
-                  className="text-orange-dark/70 hover:text-orange-dark"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-3.5">
-        <h3 className="text-sm font-bold text-navy uppercase tracking-wide">
-          Itinerary
-        </h3>
-
-        {itinerary.map((day, i) => (
-          <div
-            key={i}
-            className="bg-white border border-line rounded-brand p-5"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[13px] font-bold text-navy">
-                Day {i + 1}
-              </span>
-
-              {itinerary.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeItineraryDay(i)}
-                  className="text-[12px] text-red-600 hover:underline"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-
-            <div className="space-y-2.5">
+            <div>
+              <label className={labelClass}>Package Name</label>
               <input
                 required
-                placeholder="Title"
-                value={day.title}
+                value={form.packageName}
                 onChange={(e) =>
-                  updateItineraryDay(i, {
-                    title: e.target.value,
-                  })
+                  handlePackageNameChange(e.target.value)
                 }
                 className={inputClass}
               />
-
-              <textarea
-                required
-                placeholder="Description"
-                value={day.description}
-                onChange={(e) =>
-                  updateItineraryDay(i, {
-                    description: e.target.value,
-                  })
-                }
-                className={`${inputClass} min-h-[60px]`}
-              />
-            </div>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          onClick={addItineraryDay}
-          className="w-full border-2 border-dashed border-line rounded-brand py-3 text-[13px] font-semibold text-orange-dark hover:border-orange transition-colors"
-        >
-          + Add Day
-        </button>
-      </div>
-
-      <div className="space-y-3.5">
-        <h3 className="text-sm font-bold text-navy uppercase tracking-wide">
-          Attractions
-        </h3>
-
-        {attractions.map((attraction, i) => (
-          <div
-            key={attraction.id ?? `new-${i}`}
-            className="bg-white border border-line rounded-brand p-5"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[13px] font-bold text-navy">
-                Attraction {i + 1}
-              </span>
-
-              {attractions.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeAttraction(i)}
-                  className="text-[12px] text-red-600 hover:underline"
-                >
-                  Remove
-                </button>
-              )}
             </div>
 
-            <div className="space-y-2.5">
+            <div>
+              <label className={labelClass}>Package Slug</label>
               <input
                 required
-                placeholder="Name"
-                value={attraction.name}
-                onChange={(e) =>
-                  updateAttraction(i, {
-                    name: e.target.value,
-                  })
-                }
+                value={form.packageSlug}
+                onChange={(e) => {
+                  setPackageSlugTouched(true);
+                  setForm({
+                    ...form,
+                    packageSlug: slugify(e.target.value),
+                  });
+                }}
                 className={inputClass}
               />
+            </div>
 
-              <textarea
-                required
-                placeholder="Description"
-                value={attraction.description}
-                onChange={(e) =>
-                  updateAttraction(i, {
-                    description: e.target.value,
-                  })
-                }
-                className={`${inputClass} min-h-[50px]`}
+            <div>
+              <label className={labelClass}>Package Image URL (optional)</label>
+              <input
+                type="url"
+                placeholder="https://... — leave blank to use the destination's hero image"
+                value={form.packageImage}
+                onChange={(e) => setForm({ ...form, packageImage: e.target.value })}
+                className={inputClass}
               />
+            </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
-                <div>
-                  <label className={labelClass}>Price (₹)</label>
+            <div className="grid grid-cols-3 gap-3.5">
+              <div>
+                <label className={labelClass}>Days</label>
+                <input
+                  required
+                  type="number"
+                  min={1}
+                  value={form.durationDays}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      durationDays: Number(e.target.value),
+                    })
+                  }
+                  className={inputClass}
+                />
+              </div>
 
-                  <input
-                    required
-                    type="number"
-                    inputMode="numeric"
-                    min={0}
-                    max={1e8}
-                    step={100}
-                    placeholder="e.g. 2500"
-                    value={
-                      attraction.price === 0
-                        ? ""
-                        : attraction.price
+              <div>
+                <label className={labelClass}>Nights</label>
+                <input
+                  required
+                  type="number"
+                  min={0}
+                  value={form.durationNights}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      durationNights: Number(e.target.value),
+                    })
+                  }
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Base Price (₹)</label>
+                <input
+                  required
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={1e8}
+                  step={100}
+                  placeholder="e.g. 45000"
+                  value={form.basePrice === 0 ? "" : form.basePrice}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/^0+(?=\d)/, "");
+
+                    if (raw === "") {
+                      setForm({ ...form, basePrice: 0 });
+                      return;
                     }
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(
-                        /^0+(?=\d)/,
-                        ""
-                      );
 
-                      if (raw === "") {
-                        updateAttraction(i, { price: 0 });
-                        return;
-                      }
+                    const num = Math.min(Number(raw), 1e8);
 
-                      const num = Math.min(Number(raw), 1e8);
+                    setForm({
+                      ...form,
+                      basePrice: num,
+                    });
+                  }}
+                  className={inputClass}
+                />
+              </div>
+            </div>
 
-                      updateAttraction(i, {
-                        price: num,
-                      });
-                    }}
-                    className={inputClass}
-                  />
+            <div>
+              <label className={labelClass}>Included Services</label>
+
+              <div className="flex gap-2 mb-2">
+                <input
+                  value={serviceInput}
+                  onChange={(e) => setServiceInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addService();
+                    }
+                  }}
+                  placeholder="e.g. Return Flights"
+                  className={inputClass}
+                />
+
+                <button
+                  type="button"
+                  onClick={addService}
+                  className="shrink-0 bg-navy text-white text-sm font-semibold px-4 rounded-lg"
+                >
+                  Add
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {includedServices.map((s, i) => (
+                  <span
+                    key={i}
+                    className="bg-[#fdece2] text-orange-dark text-[13px] font-medium pl-3.5 pr-2 py-1.5 rounded-full flex items-center gap-1.5"
+                  >
+                    {s}
+
+                    <button
+                      type="button"
+                      onClick={() => removeService(i)}
+                      className="text-orange-dark/70 hover:text-orange-dark"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3.5">
+            <h3 className="text-sm font-bold text-navy uppercase tracking-wide">
+              Itinerary
+            </h3>
+
+            {itinerary.map((day, i) => (
+              <div
+                key={i}
+                className="bg-white border border-line rounded-brand p-5"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[13px] font-bold text-navy">
+                    Day {i + 1}
+                  </span>
+
+                  {itinerary.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeItineraryDay(i)}
+                      className="text-[12px] text-red-600 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
 
-                <div>
-                  <label className={labelClass}>Image URL</label>
-
+                <div className="space-y-2.5">
                   <input
                     required
-                    type="url"
-                    placeholder="https://..."
-                    value={attraction.image}
+                    placeholder="Title"
+                    value={day.title}
                     onChange={(e) =>
-                      updateAttraction(i, {
-                        image: e.target.value,
+                      updateItineraryDay(i, {
+                        title: e.target.value,
                       })
                     }
                     className={inputClass}
                   />
 
-                  {attraction.image && (
-                    <div className="mt-2 relative h-24 w-24 rounded-lg overflow-hidden border border-line bg-cream">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={attraction.image}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display =
-                            "none";
-
-                          e.currentTarget.nextElementSibling?.classList.remove(
-                            "hidden"
-                          );
-                        }}
-                      />
-
-                      <div className="hidden absolute inset-0 flex items-center justify-center text-[10px] text-red-600 font-medium text-center px-1">
-                        Couldn't load
-                      </div>
-                    </div>
-                  )}
+                  <textarea
+                    required
+                    placeholder="Description"
+                    value={day.description}
+                    onChange={(e) =>
+                      updateItineraryDay(i, {
+                        description: e.target.value,
+                      })
+                    }
+                    className={`${inputClass} min-h-[60px]`}
+                  />
                 </div>
               </div>
+            ))}
 
-              <label className="flex items-center gap-2 text-[13px] text-navy">
-                <input
-                  type="checkbox"
-                  checked={attraction.includedByDefault}
-                  onChange={(e) =>
-                    updateAttraction(i, {
-                      includedByDefault: e.target.checked,
-                    })
-                  }
-                  className="w-4 h-4 accent-orange"
-                />
-
-                Included by default (locked, not an optional add-on)
-              </label>
-            </div>
+            <button
+              type="button"
+              onClick={addItineraryDay}
+              className="w-full border-2 border-dashed border-line rounded-brand py-3 text-[13px] font-semibold text-orange-dark hover:border-orange transition-colors"
+            >
+              + Add Day
+            </button>
           </div>
-        ))}
 
-        <button
-          type="button"
-          onClick={addAttraction}
-          className="w-full border-2 border-dashed border-line rounded-brand py-3 text-[13px] font-semibold text-orange-dark hover:border-orange transition-colors"
-        >
-          + Add Attraction
-        </button>
-      </div>
+          <div className="space-y-3.5">
+            <h3 className="text-sm font-bold text-navy uppercase tracking-wide">
+              Attractions
+            </h3>
+
+            {attractions.map((attraction, i) => (
+              <div
+                key={attraction.id ?? `new-${i}`}
+                className="bg-white border border-line rounded-brand p-5"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[13px] font-bold text-navy">
+                    Attraction {i + 1}
+                  </span>
+
+                  {attractions.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeAttraction(i)}
+                      className="text-[12px] text-red-600 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                <div className="space-y-2.5">
+                  <input
+                    required
+                    placeholder="Name"
+                    value={attraction.name}
+                    onChange={(e) =>
+                      updateAttraction(i, {
+                        name: e.target.value,
+                      })
+                    }
+                    className={inputClass}
+                  />
+
+                  <textarea
+                    required
+                    placeholder="Description"
+                    value={attraction.description}
+                    onChange={(e) =>
+                      updateAttraction(i, {
+                        description: e.target.value,
+                      })
+                    }
+                    className={`${inputClass} min-h-[50px]`}
+                  />
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className={labelClass}>Price (₹)</label>
+
+                      <input
+                        required
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        max={1e8}
+                        step={100}
+                        placeholder="e.g. 2500"
+                        value={
+                          attraction.price === 0
+                            ? ""
+                            : attraction.price
+                        }
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(
+                            /^0+(?=\d)/,
+                            ""
+                          );
+
+                          if (raw === "") {
+                            updateAttraction(i, { price: 0 });
+                            return;
+                          }
+
+                          const num = Math.min(Number(raw), 1e8);
+
+                          updateAttraction(i, {
+                            price: num,
+                          });
+                        }}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClass}>Image URL</label>
+
+                      <input
+                        required
+                        type="url"
+                        placeholder="https://..."
+                        value={attraction.image}
+                        onChange={(e) =>
+                          updateAttraction(i, {
+                            image: e.target.value,
+                          })
+                        }
+                        className={inputClass}
+                      />
+
+                      {attraction.image && (
+                        <div className="mt-2 relative h-24 w-24 rounded-lg overflow-hidden border border-line bg-cream">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={attraction.image}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display =
+                                "none";
+
+                              e.currentTarget.nextElementSibling?.classList.remove(
+                                "hidden"
+                              );
+                            }}
+                          />
+
+                          <div className="hidden absolute inset-0 flex items-center justify-center text-[10px] text-red-600 font-medium text-center px-1">
+                            Couldn't load
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <label className="flex items-center gap-2 text-[13px] text-navy">
+                    <input
+                      type="checkbox"
+                      checked={attraction.includedByDefault}
+                      onChange={(e) =>
+                        updateAttraction(i, {
+                          includedByDefault: e.target.checked,
+                        })
+                      }
+                      className="w-4 h-4 accent-orange"
+                    />
+
+                    Included by default (locked, not an optional add-on)
+                  </label>
+                </div>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addAttraction}
+              className="w-full border-2 border-dashed border-line rounded-brand py-3 text-[13px] font-semibold text-orange-dark hover:border-orange transition-colors"
+            >
+              + Add Attraction
+            </button>
+          </div>
+        </>
+      )}
 
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
