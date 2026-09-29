@@ -37,7 +37,7 @@ export default async function PackageDetailPage({
     <main>
       <div className="relative h-[320px] sm:h-[380px] lg:h-[420px]">
         <SafeImage
-          src={destination.heroImage}
+          src={pkg.image ?? destination.heroImage}
           alt={destination.name}
           fill
           priority
