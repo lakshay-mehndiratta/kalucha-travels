@@ -1,26 +1,30 @@
 # Kalucha Travels
 
-A travel agency web application for **Kalucha Travels**, offering destination browsing, holiday package customization, flight enquiries, and visa application services. Includes a full admin dashboard for managing destinations, enquiries, and visa applications.
+A travel agency web application for Kalucha Travels, offering destination browsing, holiday package customization, flight enquiries, and visa application services. Includes a full admin dashboard for managing destinations, packages, enquiries, and visa applications.
 
 ## Features
 
-**Holiday Destinations**
-- Browse destinations and view package details, pricing, and itineraries
+### Holiday Destinations
+- Browse all destinations from a dedicated listing page
+- Destinations with a single package route straight to that package's details; destinations with multiple packages present a package picker first
+- View package details, pricing, itineraries, and included services, each with its own image
 - Customize packages with optional attractions and see dynamic pricing
 - Submit destination enquiries
 
-**Flight Enquiries**
+### Flight Enquiries
 - One-way, round-trip, and multi-city search
 - Traveller count and cabin class selection
 - Contact and travel detail collection
 
-**Visa Services**
+### Visa Services
 - Online visa application with destination, visa type, and travel date selection
 - Passport and supporting document upload with secure storage
 - Automatic document cleanup after the retention period
 
-**Admin Dashboard**
-- Manage destinations, packages, and itineraries
+### Admin Dashboard
+- Add, edit, and delete destinations (name, slug, country, hero image, description)
+- Add, edit, and delete packages independently of their destination — each package has its own slug, image, pricing, itinerary, and attractions, and a destination can hold any number of packages
+- Review package details in a read-only view before editing, with edits applied only after explicitly entering edit mode
 - Review and update the status of destination enquiries, flight enquiries, and visa applications
 - Access uploaded visa documents via signed URLs
 - Export enquiries to Excel
