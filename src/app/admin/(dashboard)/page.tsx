@@ -6,8 +6,6 @@ import {
   HiOutlineCheckCircle,
 } from "react-icons/hi2";
 
-export const dynamic = "force-dynamic";
-
 export default async function DashboardPage() {
   const [
     totalDestinationEnquiries,
@@ -16,6 +14,7 @@ export default async function DashboardPage() {
     newFlightEnquiries,
     recentDestinationEnquiries,
     recentFlightEnquiries,
+    recentVisaApplications,
   ] = await Promise.all([
     prisma.enquiry.count(),
     prisma.enquiry.count({ where: { status: "NEW" } }),
@@ -27,6 +26,7 @@ export default async function DashboardPage() {
       include: { package: { include: { destination: true } } },
     }),
     prisma.flightEnquiry.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
+    prisma.visaApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
   ]);
 
   const stats = [
@@ -96,6 +96,32 @@ export default async function DashboardPage() {
             ))}
             {recentFlightEnquiries.length === 0 && (
               <p className="text-sm text-muted">No enquiries yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <div className="bg-white border border-line rounded-brand p-5">
+          <h3 className="text-sm font-bold text-navy uppercase tracking-wide mb-4">
+            Recent Visa Applications
+          </h3>
+          <div className="space-y-3">
+            {recentVisaApplications.map((v) => (
+              <div key={v.id} className="flex justify-between items-center border-b border-line pb-3 last:border-b-0 last:pb-0">
+                <div>
+                  <div className="text-[13.5px] font-medium text-navy">{v.name}</div>
+                  <div className="text-[12px] text-muted">
+                    {v.destinationCountry} — {v.visaType}
+                  </div>
+                </div>
+                <span className="text-[11px] font-semibold text-muted">
+                  {new Date(v.createdAt).toLocaleDateString("en-IN")}
+                </span>
+              </div>
+            ))}
+            {recentVisaApplications.length === 0 && (
+              <p className="text-sm text-muted">No applications yet.</p>
             )}
           </div>
         </div>
