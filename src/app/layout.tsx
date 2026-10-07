@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Kalucha Travels",
-  description: "Your trusted travel partner for visas, holidays, flights, and unforgettable journeys worldwide.",
+  title: "Kalucha Travels | Visa, Flights & Holiday Packages",
+  description:
+    "Plan your next journey with Kalucha Travels. Get expert visa assistance, flight bookings, holiday packages and personalized travel services from start to finish.",
 };
 
 export default function RootLayout({
