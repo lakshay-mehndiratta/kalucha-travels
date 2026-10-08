@@ -10,10 +10,10 @@ import Logo from "@/components/ui/Logo";
 const quickLinks = [
   { href: "/", label: "Home" },
   { href: "/#about", label: "About Us" },
-  { href: "#services", label: "Visa Services" },
+  { href: "/#services", label: "Visa Services" },
   { href: "#packages", label: "Holiday Packages" },
-  { href: "/#destinations", label: "Destinations" },
-  { href: "#contact", label: "Contact Us" },
+  { href: "/destinations", label: "Destinations" },
+  { href: "/#contact", label: "Contact Us" },
 ];
 
 const serviceLinks = [

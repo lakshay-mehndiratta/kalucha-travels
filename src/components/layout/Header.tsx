@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/#services", label: "Visa Services" },
   { href: "/flights", label: "Flights" },
   { href: "#packages", label: "Holiday Packages" },
-  { href: "/#destinations", label: "Destinations" },
+  { href: "/destinations", label: "Destinations" },
   { href: "/#contact", label: "Contact Us" },
 ];
 
