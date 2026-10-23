@@ -103,10 +103,10 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-3 py-5 text-[12.5px] text-[#86959b] text-center sm:text-left">
           <span>© 2026 Kalucha Travels. All Rights Reserved.</span>
           <span>
-            <Link href="#" className="ml-0 sm:ml-5 mr-5 sm:mr-0 hover:text-orange transition-colors">
+            <Link href="/terms-and-conditions" className="ml-0 sm:ml-5 mr-5 sm:mr-0 hover:text-orange transition-colors">
               Terms &amp; Conditions
             </Link>
-            <Link href="#" className="ml-0 sm:ml-5 hover:text-orange transition-colors">
+            <Link href="/privacy-policy" className="ml-0 sm:ml-5 hover:text-orange transition-colors">
               Privacy Policy
             </Link>
           </span>
